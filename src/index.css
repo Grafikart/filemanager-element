@@ -1,0 +1,195 @@
+.fm-filemanager {
+    --fm-color: #212944;
+    --fm-background: #FEFEFE;
+    --fm-border: #F0F0F6;
+    --fm-backgroundDarken: #F8FAFB;
+    --fm-iconColor: #C6D0D6;
+    --fm-shadow: 0px 1px 4px rgba(212, 212, 212, 0.2);
+    --fm-contrast: #457CFF;
+}
+
+.fm-filemanager svg {
+    display: block;
+}
+
+.fm-modalOverlay {
+    background-color: var(--fm-backgroundDarken);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fm-modal {
+    display: grid;
+    grid-template-columns: 278px 1fr;
+    width: calc(100vw - 50px);
+    max-width: 1200px;
+    height: calc(90vh - 50px);
+    max-height: 875px;
+    color: var(--fm-color);
+    background: var(--fm-background);
+    border: 1px solid #EBECED;
+    box-sizing: border-box;
+    box-shadow: var(--fm-shadow);
+    border-radius: 8px;
+}
+
+.fm-modal > aside {
+    border-right: 1px solid var(--fm-border);
+    padding: 34px;
+}
+
+.fm-filesList, .fm-filesList * {
+    display: block;
+}
+
+.fm-filesList tr {
+    padding: 12px 0;
+    display: grid;
+    grid-template-columns: 70px 250px 1fr 75px 50px;
+    align-items: center;
+    transition: opacity .5s;
+}
+
+.fm-filesList tr:hover {
+    background-color: var(--fm-backgroundDarken);
+}
+
+.fm-filesList tr.fm-isLoading {
+    opacity: .3;
+    animation: fmFadeRow infinite linear 2s .5s;
+    pointer-events: none;
+}
+
+@keyframes fmFadeRow {
+    0% {opacity: .3}
+    50% {opacity: .1}
+    100% {opacity: .3}
+}
+
+.fm-filesList td:nth-child(3) {
+    margin-left: 24px;
+}
+
+.fm-filesList button {
+    border: none;
+    display: block;
+    background: none;
+    color: var(--fm-iconColor);
+    cursor: pointer;
+    padding: 10px;
+    margin: 0;
+    transition: color .3s;
+}
+
+.fm-filesList button:hover {
+    color: var(--fm-color);
+}
+
+.fm-filesList img {
+    display: block;
+    filter: drop-shadow(0px 1px 4px rgba(16, 43, 107, 0.6));
+    border-radius: 6px;
+}
+
+.fm-folders,
+.fm-folders li{
+    margin: 0;
+    list-style: none;
+    padding: 0;
+}
+
+.fm-folders ul {
+    margin-left: 25px;
+}
+
+.fm-folder {
+    --fm-folderColor: var(--fm-iconColor);
+    --fm-nameColor: var(--fm-color);
+    display: flex;
+    height: 36px;
+    max-width: 184px;
+    list-style: none;
+    align-items: center;
+    font-weight: 500;
+    padding: 0 12px 0 8px;
+    margin: 0 -12px 0 -8px;
+    border-radius: 6px;
+    transition: background .3s, color .3s;
+    flex-wrap: wrap;
+    cursor: pointer;
+    color: var(--fm-iconColor);
+    position: relative;
+}
+
+.fm-folder.is-open {
+    --fm-folderColor: var(--fm-nameColor);
+}
+
+.fm-folder.is-current {
+    --fm-folderColor: var(--fm-contrast);
+    --fm-nameColor: var(--fm-contrast);
+}
+
+.fm-folder.is-current::before {
+    content:'';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--fm-contrast);
+    opacity: .1;
+    border-radius: 6px;
+}
+
+.fm-iconArrow {
+    color: var(--fm-folderColor);
+    margin-right: 8px;
+    transform: rotate(90deg);
+    transition: .3s;
+}
+
+.fm-folderName {
+    color: var(--fm-nameColor);
+}
+
+.fm-iconArrow.fm-hidden {
+    opacity: 0;
+}
+
+.fm-folder.is-open .fm-iconArrow {
+    transform: rotate(180deg);
+}
+
+.fm-iconFolder  {
+    color: var(--fm-folderColor);
+    width: 23px;
+    height: 23px;
+    margin-right: 8px;
+    transition: color .3s;
+}
+
+.fm-folder .fm-loader {
+    margin: 2px 9px 2px 2px;
+}
+
+.fm-loader {
+    --size: 20px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    border-top: 2px solid var(--fm-iconColor);
+    will-change: transform;
+    animation: fmLoaderAnimation 1s infinite linear;
+}
+
+@keyframes fmLoaderAnimation {
+    from {transform: rotate(0deg)}
+    to {transform: rotate(360deg)}
+}
