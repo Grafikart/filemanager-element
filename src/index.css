@@ -25,6 +25,7 @@
 }
 
 .fm-modal {
+    position: relative;
     display: grid;
     grid-template-columns: 278px 1fr;
     width: calc(100vw - 50px);
@@ -39,9 +40,79 @@
     border-radius: 8px;
 }
 
+.fm-dropzone {
+    pointer-events: none;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity .3s;
+    color: #FFF;
+}
+
+.fm-dropzone > * {
+    position: relative;
+    z-index: 1;
+}
+
+.is-dragover .fm-dropzone {
+    opacity: 1;
+}
+
+.fm-dropzone svg {
+    width: 100px;
+    height: 100px;
+}
+
+.is-dragover .fm-iconUploadArrow {
+    animation: fm-iconUploadArrow 2s infinite;
+}
+
+@keyframes fm-iconUploadArrow {
+    0% {
+    transform: translateY(2px)
+    }
+    50% {
+        transform: translateY(0px)
+    }
+    100% {
+        transform: translateY(2px)
+    }
+}
+
+.fm-dropzone::after,
+.fm-dropzone::before {
+    content:'';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.fm-dropzone::before {
+    background-color: var(--fm-contrast);
+    opacity: .6;
+}
+
+.fm-dropzone::after {
+    margin: 10px;
+    border-radius: 4px;
+    border: dashed 2px var(--fm-contrast);
+}
+
 .fm-modal > aside {
     border-right: 1px solid var(--fm-border);
     padding: 34px;
+}
+
+.fm-modal > main {
+    position: relative;
 }
 
 .fm-filesList, .fm-filesList * {
