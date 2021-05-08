@@ -1,6 +1,6 @@
 import { render } from "preact";
 import { FileManager } from "./FileManager";
-import "./index.css";
+import "./css/main.scss";
 
 class FileManagerElement extends HTMLElement {
   connectedCallback() {

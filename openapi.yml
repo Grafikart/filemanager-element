@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  description: "API to manage files for website"
+  version: 1.0.0
+  title: "File manager API"
+paths:
+  /folders:
+    get:
+      tags:
+        - FolderResource
+      description: "Retrieve a list of folders"
+      parameters:
+        - in: query
+          name: parent
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The list of folders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Folder'
+        "400":
+          $ref: '#/components/responses/400'
+    post:
+      tags:
+        - FolderResource
+      description: "Create a new folder"
+      responses:
+        "201":
+          description: "Created folder"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Folder'
+        "422":
+          $ref: '#/components/responses/validationError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  required: true
+                parent:
+                  required: true
+                  oneOf:
+                    - type: string
+                    - type: integer
+
+
+  /folders/{id}:
+    delete:
+      tags:
+        - FolderResource
+      description: "Delete a folder"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: FolderResource not found
+        "403":
+          description: FolderResource cannot be deleted
+
+  /files:
+    get:
+      tags:
+        - File
+      description: "Retrieve a list of files"
+      parameters:
+        - in: query
+          name: folder
+          schema:
+            type: string
+        - in: query
+          name: search
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The list of files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/File'
+        "400":
+          $ref: '#/components/responses/400'
+        "422":
+          $ref: '#/components/responses/validationError'
+    post:
+      tags:
+        - File
+      description: "Upload a new file"
+      responses:
+        "201":
+          description: "Uploaded file"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  required: true
+                folder:
+                  required: true
+                  oneOf:
+                    - type: string
+                    - type: integer
+
+  /files/{id}:
+    delete:
+      tags:
+        - File
+      description: "Delete a file"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: File not found
+
+
+components:
+  responses:
+    "400":
+      description: Bad request
+      content:
+        application/json: {}
+    validationError:
+      description: ValidationError
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    type: string
+  schemas:
+    Folder:
+      type: object
+      required:
+        - id
+        - name
+        - parent
+        - hasChildren
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        name:
+          type: string
+          description: FolderResource name
+        parent:
+          description: Parent folder
+          nullable: true
+          oneOf:
+            - type: string
+            - type: integer
+        hasChildren:
+          type: boolean
+          description: This folder has subfolder
+    File:
+      type: object
+      required:
+        - id
+        - name
+        - url
+        - folder
+        - size
+        - thumbnail
+      properties:
+        id:
+          $ref: '#/components/schemas/ID'
+        name:
+          type: string
+          description: FolderResource name
+        url:
+          type: string
+          description: Public url
+        size:
+          type: integer
+          description: File size
+        folder:
+          $ref: '#/components/schemas/ID'
+        thumbnail:
+          type: string
+    ID:
+      oneOf:
+        - type: string
+        - type: integer
+

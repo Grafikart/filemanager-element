@@ -1,0 +1,16 @@
+.fm-filemanager  * {
+    box-sizing: border-box;
+}
+
+.fm-filemanager input {
+    font-family: inherit;
+    color: inherit;
+}
+
+.fm-filemanager button {
+    border: none;
+    background-color: transparent;
+    font-size: inherit;
+    cursor: pointer;
+    color: inherit;
+}

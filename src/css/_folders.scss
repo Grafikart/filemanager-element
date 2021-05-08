@@ -1,0 +1,97 @@
+
+.fm-folders,
+.fm-folders li{
+    margin: 0;
+    list-style: none;
+    padding: 0;
+}
+
+.fm-folders ul {
+    margin-left: 25px;
+}
+
+.fm-folder {
+    --fm-folderColor: var(--fm-iconColor);
+    --fm-nameColor: var(--fm-color);
+    display: flex;
+    height: 36px;
+    max-width: 184px;
+    list-style: none;
+    align-items: center;
+    font-weight: 500;
+    padding: 0 12px 0 8px;
+    margin: 0 -12px 0 -8px;
+    border-radius: 6px;
+    transition: background .3s, color .3s;
+    flex-wrap: wrap;
+    cursor: pointer;
+    color: var(--fm-iconColor);
+    position: relative;
+}
+
+.fm-folder.is-open {
+    --fm-folderColor: var(--fm-nameColor);
+}
+
+.fm-folder.is-current {
+    --fm-folderColor: var(--fm-contrast);
+    --fm-nameColor: var(--fm-contrast);
+}
+
+.fm-folder.is-current::before {
+    content:'';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--fm-contrast);
+    opacity: .1;
+    border-radius: 6px;
+}
+
+.fm-iconArrow {
+    color: var(--fm-folderColor);
+    margin-right: 8px;
+    transform: rotate(90deg);
+    transition: .3s;
+}
+
+.fm-folderName {
+    color: var(--fm-nameColor);
+}
+
+.fm-iconArrow.fm-hidden {
+    opacity: 0;
+}
+
+.fm-folder.is-open .fm-iconArrow {
+    transform: rotate(180deg);
+}
+
+.fm-iconFolder  {
+    color: var(--fm-folderColor);
+    width: 23px;
+    height: 23px;
+    margin-right: 8px;
+    transition: color .3s;
+}
+
+.fm-folder .fm-loader {
+    margin: 2px 9px 2px 2px;
+}
+
+.fm-loader {
+    --size: 20px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    border-top: 2px solid var(--fm-iconColor);
+    will-change: transform;
+    animation: fmLoaderAnimation 1s infinite linear;
+}
+
+@keyframes fmLoaderAnimation {
+    from {transform: rotate(0deg)}
+    to {transform: rotate(360deg)}
+}
