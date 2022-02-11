@@ -1,26 +1,38 @@
 <template>
-  <form action="" on:submit|preventDefault={handleSubmit} class="wrapper">
+  <form action="" on:submit|preventDefault={handleSubmit} class="wrapper" use:clickOutside on:outclick={handleCancel}>
     <IconFolder />
-    <input type="text" placeholder="Nom du dossier" name="name" required autofocus/>
-    <IconButton><IconArrowRight size={12}/></IconButton>
+    <input type="text" placeholder="Nom du dossier" name="name" required use:autofocus disabled={$createFolderMutation.isLoading}/>
+    <IconButton disabled={$createFolderMutation.isLoading}>
+      {#if $createFolderMutation.isLoading}
+        <IconLoader size={12}/>
+      {:else}
+        <IconArrowRight size={12}/>
+      {/if}
+    </IconButton>
   </form>
 </template>
 
 <script lang="ts">
-  import { createFolder, flash } from '../../store'
+  import { createFolder, useCreateFolderMutation } from '../../store'
+  import { autofocus } from '../../actions/autofocus'
+  import { clickOutside } from '../../actions/clickOutside'
   import { createEventDispatcher } from 'svelte';
   import IconArrowRight from '../icons/IconArrowRight.svelte'
   import IconFolder from '../icons/IconFolder.svelte'
   import IconButton from '../icons/IconButton.svelte'
   import { useQueryClient } from '@sveltestack/svelte-query'
   import type { Folder } from '../../types'
+  import IconLoader from '../icons/IconLoader.svelte'
   const queryClient = useQueryClient()
   export let parent: Folder;
-  const handleSubmit = (e: SubmitEvent) => {
+  const createFolderMutation = useCreateFolderMutation();
+  const handleSubmit = async (e: SubmitEvent) => {
     const name = new FormData((e.currentTarget as HTMLFormElement)).get('name').toString()
-    createFolder(queryClient, name, parent)
+    await $createFolderMutation.mutateAsync({ name, parent })
     dispatch('submit')
-    flash('Le dossier a bien été créé')
+  }
+  const handleCancel = () => {
+    dispatch('cancel')
   }
   const dispatch = createEventDispatcher()
 </script>

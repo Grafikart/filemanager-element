@@ -1,30 +1,40 @@
 <template>
   <QueryClientProvider client={queryClient}>
+  {#if !hidden}
   <div class="root">
-    <div class="overlay">
-      <div class="modal">
+    <div class="overlay" transition:fly={{duration: 300}}>
+      <div class="modal" transition:fly={{y: -30, duration: 500}} use:clickOutside={'close'}>
         <Sidebar/>
         <Dropzone>
-          <FilesList />
+          {#key $folder?.id}
+            <FilesList folder={$folder} />
+          {/key}
         </Dropzone>
         <Alerts />
       </div>
     </div>
   </div>
+  {/if}
   </QueryClientProvider>
 </template>
 
-<script>
+<script lang="ts">
+  import { clickOutside } from './actions/clickOutside'
+  import { fly } from 'svelte/transition'
   import Sidebar from './ui/Sidebar/Sidebar.svelte'
   import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query'
   import Dropzone from './ui/Dropzone.svelte'
   import FilesList from './ui/FilesList.svelte'
   import Alerts from './ui/Alerts/Alerts.svelte'
+  import {folder} from './store'
+
+  export let hidden: boolean
 
   const queryClient = new QueryClient({
     defaultOptions:{
       queries: {
         refetchOnWindowFocus: false,
+        staleTime: 60000
       }
     }
   })
@@ -39,6 +49,7 @@
     --fm-red-dark: #9e3030;
     --fm-color-50: rgba(33, 41, 68, .5);
     --fm-background: #FEFEFE;
+    --fm-overlay: rgba(254, 254, 254, 0.9);
     --fm-border: #F0F0F6;
     --fm-inputBorder: #D7DEE1;
     --fm-backgroundDarken: #F8FAFB;
@@ -48,7 +59,7 @@
     --fm-contrastTransparent: #457CFF33;
   }
   .overlay {
-    background-color: var(--fm-backgroundDarken);
+    background-color: var(--fm-overlay);
     position: fixed;
     top: 0;
     left: 0;

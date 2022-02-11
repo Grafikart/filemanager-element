@@ -1,5 +1,5 @@
 <template>
-  <main class="main" use:dragover on:dropzoneover={handleDragOver} on:dropzoneleave={handleDragLeave} on:drop={handleDrop}>
+  <main class="main" use:dragOver on:dropzoneover={handleDragOver} on:dropzoneleave={handleDragLeave} on:drop={handleDrop}>
     <slot/>
     <span class="dropzone" class:active={over}>
       <IconUpload animated={over}/>
@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import IconUpload from './icons/IconUpload.svelte'
-import {dragover} from '../actions/dragover'
+import {dragOver} from '../actions/dragOver'
 import { useQueryClient } from '@sveltestack/svelte-query'
 import { uploadFile, folder } from '../store'
 let over = false

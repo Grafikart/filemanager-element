@@ -3,7 +3,7 @@
     <span class="wrapper" class:active={folder.id === $currentFolder?.id || over}>
       <span
               class="folder"
-              use:dragover
+              use:dragOver
               on:click|preventDefault={loadChildren}
               on:dropzoneover={handleDragOver}
               on:dropzoneleave={handleDragLeave}
@@ -20,7 +20,7 @@
       <button class="new-folder" on:click|preventDefault={handleAddFolder}><IconCirclePlus size={16}/></button>
     </span>
     {#if addNewFolder}
-    <NewFolder parent={folder} on:submit={() => addNewFolder = false}/>
+    <NewFolder parent={folder} on:submit={exitAddFolder} on:cancel={exitAddFolder}/>
     {/if}
     {#if $children.isSuccess}
       <Folders folders={$children.data}/>
@@ -38,7 +38,7 @@
   import IconFolder from '../icons/IconFolder.svelte'
   import Folders from './Folders.svelte'
   import { folder as currentFolder, foldersQueryKey, uploadFile } from '../../store'
-  import { dragover } from '../../actions/dragover'
+  import { dragOver } from '../../actions/dragOver'
   import IconCirclePlus from '../icons/IconCirclePlus.svelte'
   import NewFolder from './NewFolder.svelte'
 
@@ -58,6 +58,9 @@
     if (!$children.isSuccess) {
       $children.refetch()
     }
+  }
+  const exitAddFolder = () => {
+    addNewFolder = false
   }
   const loadChildren = () => {
     $currentFolder = folder

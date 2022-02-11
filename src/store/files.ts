@@ -17,6 +17,8 @@ export const foldersQueryKey = (parentId?: Folder['id'] | null) => `folders/${pa
 const folderStore = writable<Folder|null>(null)
 
 export const folder = folderStore
+export const searchQuery = writable('')
+
 
 /*
 * Methods
@@ -58,24 +60,27 @@ export const uploadFile = async (queryClient: QueryClient, file: any, folder: Fo
     alert(`Impossible de téléverser ce fichier`)
   }
 }
-export const createFolder = async (queryClient: QueryClient, name: string, parent: Folder) => {
-  try {
-    const data = await fetchApi(config.endpoint, '/folders', {
+
+
+export const useCreateFolderMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation(({name, parent}: {name: string, parent: Folder}) =>
+    fetchApi(config.endpoint, '/folders', {
       method: 'post',
       json: {
         parent: parent.id,
         name: name
       }
-    })
-    const queryKey = foldersQueryKey(parent.id)
-    const state = queryClient.getQueryState(queryKey)
-    if (state?.data) {
-      queryClient.setQueryData(queryKey, (folders: Folder[]) => [data, ...folders])
+    }), {
+      onSuccess (folder: Folder) {
+        const queryKey = foldersQueryKey(folder.parent)
+        const state = queryClient.getQueryState(queryKey)
+        if (state?.data) {
+          queryClient.setQueryData(queryKey, (folders: Folder[]) => [folder, ...folders])
+        }
+      }
     }
-  } catch (e) {
-    console.error(e)
-    alert(`Impossible de créer ce dossier`)
-  }
+  )
 }
 
 export const useDeleteFolderMutation = () => {

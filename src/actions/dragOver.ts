@@ -1,6 +1,6 @@
 import { $on } from '../functions/dom'
 
-export function dragover(node: HTMLElement) {
+export function dragOver(node: HTMLElement) {
   const offPreventListeners = $on(
     node,
     [

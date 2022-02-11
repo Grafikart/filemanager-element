@@ -1,5 +1,5 @@
 <template>
-  {#if $files?.data?.length > 0}
+  {#if files.length > 0}
   <table>
     <thead>
     <tr>
@@ -11,14 +11,12 @@
     </tr>
     </thead>
     <tbody>
-    {#if $files.isSuccess}
-      {#each $files.data as file}
-        <FileRow file={file}/>
-      {/each}
-    {/if}
+    {#each files as file}
+      <FileRow file={file}/>
+    {/each}
     </tbody>
   </table>
-  {:else if $files.isLoading}
+  {:else if $filesQuery.isLoading}
     <div class="empty">
       <IconLoader/>
     </div>
@@ -30,7 +28,7 @@
         <button
                 class="delete-folder"
                 disabled={$deleteFolder.isLoading}
-                on:click|preventDefault={$deleteFolder.mutate($folder)}>
+                on:click|preventDefault={$deleteFolder.mutate(folder)}>
           {#if $deleteFolder.isLoading}
           <IconLoader size={12}/>
           {/if}
@@ -42,24 +40,34 @@
 </template>
 
 <script lang="ts">
-  import { useDeleteFolderMutation, filesQueryKey, folder, foldersQueryKey } from '../store'
+  import { useDeleteFolderMutation, filesQueryKey, foldersQueryKey, searchQuery } from '../store'
   import { useQuery } from '@sveltestack/svelte-query'
   import config from '../config'
   import { fetchApi } from '../functions/api'
   import FileRow from './FileRow.svelte'
   import IconLoader from './icons/IconLoader.svelte'
+  import type { Folder } from '../types'
 
+  export let folder: Folder | null;
   const deleteFolder = useDeleteFolderMutation()
 
-  $: files = useQuery(filesQueryKey($folder?.id), () =>
-    fetchApi(config.endpoint, '/files', {
+  const filesQuery = useQuery(
+    filesQueryKey(folder?.id),
+    () => fetchApi(config.endpoint, '/files', {
       query: {
-        folder: $folder?.id || undefined
+        folder: folder?.id || undefined
       }
     })
   )
-  $: folders = useQuery(foldersQueryKey($folder?.id), () => null, {enabled: false})
-  $: isEmpty = $folder?.id && $folders.isSuccess && $folders?.data?.length === 0 && $files.isSuccess && $files?.data?.length === 0
+
+  let files = []
+  $: {
+    files = $filesQuery.isSuccess ? $filesQuery.data.filter(f => $searchQuery ? f.name.includes($searchQuery) : true) : []
+  }
+
+
+  const folders = useQuery(foldersQueryKey(folder?.id), () => null, {enabled: false})
+  $: isEmpty = folder?.id && $folders.isSuccess && $folders?.data?.length === 0 && $filesQuery.isSuccess && $filesQuery?.data?.length === 0
 </script>
 
 <style>
