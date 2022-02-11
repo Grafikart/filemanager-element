@@ -1,4 +1,6 @@
-import { paths } from "../types/generated-schema";
+import type { paths } from "../types/generated-schema";
+import { flash } from '../store'
+import { HTTPStatus } from '../types'
 
 /**
  * Utility types
@@ -62,7 +64,7 @@ export type FetchOptions<Path, Method> = RequestInit & {
   headers?: Record<string, string>;
 } & OptionalDeep<
     PickDefined<{
-      query: ApiParam<Path, Method, "query">;
+      query: Record<string, unknown>;
       params: ApiParam<Path, Method, "path">;
       json: ApiRequestBody<Path, Method, "application/json">;
     }>
@@ -75,6 +77,7 @@ export function fetchApi<Path extends Paths, Method extends Methods = "get">(
 ): Promise<ApiResponse<Path, Method>> {
   const o = {
     headers: {},
+    credentials: "include",
     ...options,
   } as RequestInit & {
     json?: object;
@@ -108,11 +111,18 @@ export function fetchApi<Path extends Paths, Method extends Methods = "get">(
     );
   }
   return fetch(url, o).then((r) => {
-    if (r.status === 204) {
+    if (r.status === HTTPStatus.NoContent) {
       return null;
     }
-    if (r.status >= 200 && r.status < 300) {
+    if (r.status >= HTTPStatus.OK && r.status < HTTPStatus.MultipleChoices) {
       return r.json();
+    }
+    if (r.status === HTTPStatus.UnprocessableEntity) {
+      const data = r.json().then(data => {
+        if (data?.message) {
+          flash(data.message, 'danger')
+        }
+      })
     }
     throw r;
   });

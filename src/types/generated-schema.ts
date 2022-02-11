@@ -127,8 +127,6 @@ export interface components {
       name: string;
       /** Parent folder */
       parent: (string | number) | null;
-      /** This folder has subfolder */
-      hasChildren: boolean;
     };
     File: {
       id: components["schemas"]["ID"];

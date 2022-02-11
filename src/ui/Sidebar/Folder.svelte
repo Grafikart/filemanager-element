@@ -1,0 +1,160 @@
+<template>
+  <li>
+    <span class="wrapper" class:active={folder.id === $currentFolder?.id || over}>
+      <span
+              class="folder"
+              use:dragover
+              on:click|preventDefault={loadChildren}
+              on:dropzoneover={handleDragOver}
+              on:dropzoneleave={handleDragLeave}
+              on:drop={handleDrop}>
+        {#if $children.isLoading}
+          <IconLoader size={20} class="folder-loader"/>
+        {:else}
+          <IconFolder class="folder-icon"/>
+        {/if}
+        <span class="name">
+          {folder.name}
+        </span>
+      </span>
+      <button class="new-folder" on:click|preventDefault={handleAddFolder}><IconCirclePlus size={16}/></button>
+    </span>
+    {#if addNewFolder}
+    <NewFolder parent={folder} on:submit={() => addNewFolder = false}/>
+    {/if}
+    {#if $children.isSuccess}
+      <Folders folders={$children.data}/>
+    {/if}
+  </li>
+
+</template>
+
+<script lang="ts">
+  import type { Folder } from '../../types'
+  import { useQuery, useQueryClient } from '@sveltestack/svelte-query'
+  import { fetchApi } from '../../functions/api'
+  import config from '../../config'
+  import IconLoader from '../icons/IconLoader.svelte'
+  import IconFolder from '../icons/IconFolder.svelte'
+  import Folders from './Folders.svelte'
+  import { folder as currentFolder, foldersQueryKey, uploadFile } from '../../store'
+  import { dragover } from '../../actions/dragover'
+  import IconCirclePlus from '../icons/IconCirclePlus.svelte'
+  import NewFolder from './NewFolder.svelte'
+
+  const queryClient = useQueryClient()
+  export let folder: Folder
+
+  let over = false
+  let addNewFolder = false
+
+  const handleDragOver = () => over = true
+  const handleDragLeave = () => over = false
+  const handleDrop = (e: DragEvent) => {
+    Array.from(e.dataTransfer.files).forEach(file => uploadFile(queryClient, file, folder))
+  }
+  const handleAddFolder = () => {
+    addNewFolder = true
+    if (!$children.isSuccess) {
+      $children.refetch()
+    }
+  }
+  const loadChildren = () => {
+    $currentFolder = folder
+    $children.refetch()
+  }
+
+  const children = useQuery(foldersQueryKey(folder.id), () =>
+      fetchApi(config.endpoint, '/folders', {
+        query: {
+          parent: folder?.id
+        }
+      })
+    , { enabled: !folder.id })
+
+</script>
+
+<style>
+  .wrapper {
+    display: block;
+    position: relative;
+    --fm-folderColor: var(--fm-iconColor);
+    --fm-nameColor: var(--fm-color);
+  }
+
+  .wrapper.active {
+    --fm-folderColor: var(--fm-contrast);
+    --fm-nameColor: var(--fm-contrast);
+  }
+
+  .new-folder {
+    border: none;
+    background-color: transparent;
+    font-weight: bold;
+    position: absolute;
+    height: 36px;
+    width: 36px;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    color: var(--fm-folderColor);
+    transition: .3s;
+  }
+
+  .new-folder:hover {
+    color: var(--fm-color);
+  }
+
+  .folder {
+    position: relative;
+    display: flex;
+    height: 36px;
+    list-style: none;
+    align-items: center;
+    font-weight: 500;
+    padding: 0 8px;
+    border-radius: 6px;
+    transition: background .3s, color .3s;
+    flex-wrap: wrap;
+    cursor: pointer;
+    color: var(--fm-iconColor);
+  }
+
+  .name {
+    color: var(--fm-nameColor);
+    overflow: hidden;
+    margin-right: 1.5em;
+    white-space: nowrap;
+    flex: 1;
+    width: 100%;
+    text-overflow: ellipsis;
+  }
+
+  .folder :global(.folder-icon) {
+    color: var(--fm-folderColor);
+    width: 23px;
+    height: 23px;
+    margin-right: 8px;
+    transition: color .3s;
+  }
+
+  .folder :global(.folder-loader) {
+    margin: 2px 9px 2px 2px;
+  }
+
+  .wrapper.active .folder::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--fm-contrast);
+    opacity: .1;
+    border-radius: 6px;
+  }
+</style>

@@ -175,7 +175,6 @@ components:
         - id
         - name
         - parent
-        - hasChildren
       properties:
         id:
           $ref: '#/components/schemas/ID'
@@ -188,9 +187,6 @@ components:
           oneOf:
             - type: string
             - type: integer
-        hasChildren:
-          type: boolean
-          description: This folder has subfolder
     File:
       type: object
       required:
