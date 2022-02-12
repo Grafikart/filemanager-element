@@ -1,10 +1,10 @@
-import type { paths } from "../types/generated-schema";
 import { flash } from '../store'
 import { HTTPStatus } from '../types'
+import type { ApiOptions, ApiPaths, ApiResponse } from "src/types/openapi";
+import { objToQueryParams } from "./url";
 
 /**
  * Utility types
- */
 // Filtre un objet en retirant les clefs qui ne satisfont pas la condition C
 type Filter<T, C> = Pick<
   T,
@@ -42,7 +42,6 @@ type PickDefined<T> = Pick<
 
 /*
  * API Related types
- */
 export type Paths = keyof paths;
 type PathMethods<Path extends Paths> = keyof paths[Path];
 type HTTPSuccess = 200 | 201 | 204;
@@ -126,4 +125,48 @@ export function fetchApi<Path extends Paths, Method extends Methods = "get">(
     }
     throw r;
   });
+}
+
+*/
+
+export function fetchApi<Path extends ApiPaths, Options extends ApiOptions<Path>>(
+  baseUrl: string,
+  path: Path,
+  options: Options
+): Promise<ApiResponse<Path, Options['method']>> {
+  const o = { ...options }
+  let url = baseUrl + path;
+  o.credentials = 'include'
+  o.headers['Accept'] = 'application/json'
+  if (o.json) {
+    o.body = JSON.stringify(o.json);
+    o.headers["Content-Type"] = "application/json";
+  }
+  // Add query parameters into the URL
+  if (o.query) {
+    url += `?${objToQueryParams(o.query).toString()}`;
+  }
+  // Replace params in the URL ("/path/{id}" for instance)
+  if (o.params) {
+    Object.keys(o.params).forEach(
+      (k) => (url = url.replace(`{${k}}`, o.params[k]))
+    );
+  }
+  return fetch(url, o)
+    .then((r) => {
+      if (r.status === HTTPStatus.NoContent) {
+        return null;
+      }
+      if (r.status >= HTTPStatus.OK && r.status < HTTPStatus.MultipleChoices) {
+        return r.json();
+      }
+      if (r.status === HTTPStatus.UnprocessableEntity) {
+        const data = r.json().then(data => {
+          if (data?.message) {
+            flash(data.message, 'danger')
+          }
+        })
+      }
+      throw r;
+    })
 }

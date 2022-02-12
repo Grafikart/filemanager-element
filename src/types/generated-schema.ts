@@ -36,8 +36,8 @@ export interface paths {
       requestBody: {
         content: {
           "application/json": {
-            name?: string;
-            parent?: string | number;
+            name: string;
+            parent: string | number;
           };
         };
       };
@@ -94,8 +94,9 @@ export interface paths {
       requestBody: {
         content: {
           "multipart/form-data": {
-            file?: string;
-            folder?: string | number;
+            /** Format: binary */
+            file: string;
+            folder: string | number;
           };
         };
       };
@@ -123,18 +124,18 @@ export interface components {
   schemas: {
     Folder: {
       id: components["schemas"]["ID"];
-      /** FolderResource name */
+      /** @description FolderResource name */
       name: string;
-      /** Parent folder */
+      /** @description Parent folder */
       parent: (string | number) | null;
     };
     File: {
       id: components["schemas"]["ID"];
-      /** FolderResource name */
+      /** @description FolderResource name */
       name: string;
-      /** Public url */
+      /** @description Public url */
       url: string;
-      /** File size */
+      /** @description File size */
       size: number;
       folder: components["schemas"]["ID"];
       thumbnail: string;
@@ -161,3 +162,5 @@ export interface components {
 }
 
 export interface operations {}
+
+export interface external {}

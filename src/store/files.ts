@@ -14,7 +14,7 @@ export const foldersQueryKey = (parentId?: Folder['id'] | null) => `folders/${pa
 /**
  * Store
  */
-const folderStore = writable<Folder|null>(null)
+const folderStore = writable<Folder | null>(null)
 
 export const folder = folderStore
 export const searchQuery = writable('')
@@ -26,7 +26,9 @@ export const searchQuery = writable('')
 export const removeFile = async (queryClient: QueryClient, file: File) => {
   const queryKey = filesQueryKey(file.folder);
   const oldData = queryClient.getQueryData(queryKey)
-  queryClient.setQueryData(queryKey, (files: File[]) => files.filter(f => f.id !== file.id))
+  if (oldData) {
+    queryClient.setQueryData<File[]>(queryKey, (files) => files ? files.filter(f => f.id !== file.id) : [])
+  }
   try {
     await fetchApi(config.endpoint, `/files/{id}`, {
       method: 'delete',
@@ -39,7 +41,7 @@ export const removeFile = async (queryClient: QueryClient, file: File) => {
     queryClient.setQueryData(queryKey, oldData)
   }
 }
-export const uploadFile = async (queryClient: QueryClient, file: any, folder: Folder|null) => {
+export const uploadFile = async (queryClient: QueryClient, file: any, folder: Folder | null) => {
   const form = new FormData()
   form.set('file', file)
   if (folder?.id) {
@@ -53,7 +55,7 @@ export const uploadFile = async (queryClient: QueryClient, file: any, folder: Fo
     const queryKey = filesQueryKey(folder?.id)
     const state = queryClient.getQueryState(queryKey)
     if (state?.data) {
-      queryClient.setQueryData(queryKey, (files: File[]) => [data, ...files])
+      queryClient.setQueryData<File[]>(queryKey, (files) => files ? [data, ...files] : data)
     }
   } catch (e) {
     console.error(e)
@@ -64,7 +66,7 @@ export const uploadFile = async (queryClient: QueryClient, file: any, folder: Fo
 
 export const useCreateFolderMutation = () => {
   const queryClient = useQueryClient()
-  return useMutation(({name, parent}: {name: string, parent: Folder}) =>
+  return useMutation(({ name, parent }: { name: string, parent: Folder }) =>
     fetchApi(config.endpoint, '/folders', {
       method: 'post',
       json: {
@@ -72,31 +74,31 @@ export const useCreateFolderMutation = () => {
         name: name
       }
     }), {
-      onSuccess (folder: Folder) {
-        const queryKey = foldersQueryKey(folder.parent)
-        const state = queryClient.getQueryState(queryKey)
-        if (state?.data) {
-          queryClient.setQueryData(queryKey, (folders: Folder[]) => [folder, ...folders])
-        }
+    onSuccess(folder: Folder) {
+      const queryKey = foldersQueryKey(folder.parent)
+      const state = queryClient.getQueryState(queryKey)
+      if (state?.data) {
+        queryClient.setQueryData<Folder[]>(queryKey, (folders) => folders ? [folder, ...folders] : [folder])
       }
     }
+  }
   )
 }
 
 export const useDeleteFolderMutation = () => {
   const queryClient = useQueryClient()
   return useMutation((folder: Folder) =>
-      fetchApi(config.endpoint, '/folders/{id}', {
-        method: 'delete',
-        params: {
-          id: folder.id.toString()
-        }
-      }).then(r => folder)
+    fetchApi(config.endpoint, '/folders/{id}', {
+      method: 'delete',
+      params: {
+        id: folder.id.toString()
+      }
+    }).then(r => folder)
     , {
       onSuccess: (folder: Folder) => {
         // If we are deleting the current directory, back to the parent
-        folderStore.update((f: Folder) => f.id === folder.id ? null : f)
-        queryClient.setQueryData(foldersQueryKey(folder.parent), (folders: Folder[]) => folders.filter(f => f.id !== folder.id))
+        folderStore.update((f: Folder | null) => f?.id === folder.id ? null : f)
+        queryClient.setQueryData<Folder[]>(foldersQueryKey(folder.parent), (folders) => folders ? folders.filter(f => f.id !== folder.id) : [])
       },
     })
 }

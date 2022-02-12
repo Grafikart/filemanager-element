@@ -44,12 +44,13 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - name
+                - parent
               properties:
                 name:
                   type: string
-                  required: true
                 parent:
-                  required: true
                   oneOf:
                     - type: string
                     - type: integer
@@ -122,12 +123,13 @@ paths:
                 file:
                   type: string
                   format: binary
-                  required: true
                 folder:
-                  required: true
                   oneOf:
                     - type: string
                     - type: integer
+              required:
+                - file
+                - folder
 
   /files/{id}:
     delete:
