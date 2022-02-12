@@ -1,81 +1,98 @@
+<script lang="ts">
+  import type { Folder } from "../../types";
+  import { useQuery, useQueryClient } from "@sveltestack/svelte-query";
+  import { fetchApi } from "../../functions/api";
+  import config from "../../config";
+  import IconLoader from "../icons/IconLoader.svelte";
+  import IconFolder from "../icons/IconFolder.svelte";
+  import Folders from "./Folders.svelte";
+  import {
+    folder as currentFolder,
+    foldersQueryKey,
+    uploadFile,
+  } from "../../store";
+  import { dragOver } from "../../actions/dragOver";
+  import IconCirclePlus from "../icons/IconCirclePlus.svelte";
+  import NewFolder from "./NewFolder.svelte";
+
+  const queryClient = useQueryClient();
+  export let folder: Folder;
+
+  let over = false;
+  let addNewFolder = false;
+
+  const handleDragOver = () => (over = true);
+  const handleDragLeave = () => (over = false);
+  const handleDrop = (e: DragEvent) => {
+    Array.from(e.dataTransfer!.files).forEach((file) =>
+      uploadFile(queryClient, file, folder)
+    );
+  };
+  const handleAddFolder = () => {
+    addNewFolder = true;
+    if (!$children.isSuccess) {
+      $children.refetch();
+    }
+  };
+  const exitAddFolder = () => {
+    addNewFolder = false;
+  };
+  const loadChildren = () => {
+    $currentFolder = folder;
+    $children.refetch();
+  };
+
+  const children = useQuery(
+    foldersQueryKey(folder.id),
+    () =>
+      fetchApi(config.endpoint, "/folders", {
+        query: {
+          parent: folder?.id.toString(),
+        },
+      }),
+    { enabled: !folder.id }
+  );
+</script>
+
 <template>
   <li>
-    <span class="wrapper" class:active={folder.id === $currentFolder?.id || over}>
+    <span
+      class="wrapper"
+      class:active={folder.id === $currentFolder?.id || over}
+    >
       <span
-              class="folder"
-              use:dragOver
-              on:click|preventDefault={loadChildren}
-              on:dropzoneover={handleDragOver}
-              on:dropzoneleave={handleDragLeave}
-              on:drop={handleDrop}>
+        class="folder"
+        use:dragOver
+        on:click|preventDefault={loadChildren}
+        on:dropzoneover={handleDragOver}
+        on:dropzoneleave={handleDragLeave}
+        on:drop={handleDrop}
+      >
         {#if $children.isLoading}
-          <IconLoader size={20} class="folder-loader"/>
+          <IconLoader size={20} class="folder-loader" />
         {:else}
-          <IconFolder class="folder-icon"/>
+          <IconFolder class="folder-icon" />
         {/if}
         <span class="name">
           {folder.name}
         </span>
       </span>
-      <button class="new-folder" on:click|preventDefault={handleAddFolder}><IconCirclePlus size={16}/></button>
+      <button class="new-folder" on:click|preventDefault={handleAddFolder}
+        ><IconCirclePlus size={16} /></button
+      >
     </span>
     {#if addNewFolder}
-    <NewFolder parent={folder} on:submit={exitAddFolder} on:cancel={exitAddFolder}/>
+      <NewFolder
+        parent={folder}
+        on:submit={exitAddFolder}
+        on:cancel={exitAddFolder}
+      />
     {/if}
     {#if $children.isSuccess}
-      <Folders folders={$children.data}/>
+      <Folders folders={$children.data} />
     {/if}
   </li>
-
 </template>
-
-<script lang="ts">
-  import type { Folder } from '../../types'
-  import { useQuery, useQueryClient } from '@sveltestack/svelte-query'
-  import { fetchApi } from '../../functions/api'
-  import config from '../../config'
-  import IconLoader from '../icons/IconLoader.svelte'
-  import IconFolder from '../icons/IconFolder.svelte'
-  import Folders from './Folders.svelte'
-  import { folder as currentFolder, foldersQueryKey, uploadFile } from '../../store'
-  import { dragOver } from '../../actions/dragOver'
-  import IconCirclePlus from '../icons/IconCirclePlus.svelte'
-  import NewFolder from './NewFolder.svelte'
-
-  const queryClient = useQueryClient()
-  export let folder: Folder
-
-  let over = false
-  let addNewFolder = false
-
-  const handleDragOver = () => over = true
-  const handleDragLeave = () => over = false
-  const handleDrop = (e: DragEvent) => {
-    Array.from(e.dataTransfer.files).forEach(file => uploadFile(queryClient, file, folder))
-  }
-  const handleAddFolder = () => {
-    addNewFolder = true
-    if (!$children.isSuccess) {
-      $children.refetch()
-    }
-  }
-  const exitAddFolder = () => {
-    addNewFolder = false
-  }
-  const loadChildren = () => {
-    $currentFolder = folder
-    $children.refetch()
-  }
-
-  const children = useQuery(foldersQueryKey(folder.id), () =>
-      fetchApi(config.endpoint, '/folders', {
-        query: {
-          parent: folder?.id
-        }
-      })
-    , { enabled: !folder.id })
-
-</script>
 
 <style>
   .wrapper {
@@ -105,7 +122,7 @@
     cursor: pointer;
     padding: 0;
     color: var(--fm-folderColor);
-    transition: .3s;
+    transition: 0.3s;
   }
 
   .new-folder:hover {
@@ -121,7 +138,7 @@
     font-weight: 500;
     padding: 0 8px;
     border-radius: 6px;
-    transition: background .3s, color .3s;
+    transition: background 0.3s, color 0.3s;
     flex-wrap: wrap;
     cursor: pointer;
     color: var(--fm-iconColor);
@@ -142,7 +159,7 @@
     width: 23px;
     height: 23px;
     margin-right: 8px;
-    transition: color .3s;
+    transition: color 0.3s;
   }
 
   .folder :global(.folder-loader) {
@@ -150,14 +167,14 @@
   }
 
   .wrapper.active .folder::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: var(--fm-contrast);
-    opacity: .1;
+    opacity: 0.1;
     border-radius: 6px;
   }
 </style>

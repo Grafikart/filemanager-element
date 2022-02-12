@@ -1,21 +1,21 @@
+<script lang="ts">
+  import type { Folder } from "../../types";
+  import Folders from "./Folders.svelte";
+  import Search from "./Search.svelte";
+
+  const root: Folder = {
+    id: "",
+    name: "/",
+    parent: null,
+  };
+</script>
+
 <template>
   <aside class="sidebar">
     <Search />
-    <Folders folders={[root]}/>
+    <Folders folders={[root]} />
   </aside>
 </template>
-
-<script lang="ts">
-  import type { Folder } from '../../types'
-  import Folders from './Folders.svelte'
-  import Search from './Search.svelte'
-
-  const root: Folder = {
-    id: undefined,
-    name: '/',
-    parent: null
-  }
-</script>
 
 <style>
   .sidebar {
@@ -23,7 +23,7 @@
     padding: 24px;
   }
   .sidebar > :global(*) + :global(*)::before {
-    content:'';
+    content: "";
     display: block;
     height: 1px;
     background-color: var(--fm-border);

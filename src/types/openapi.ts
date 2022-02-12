@@ -30,7 +30,7 @@ export enum HTTPStatus {
   NotFound = 404,
   BadRequest = 400,
 }
-type HTTPSuccess = HTTPStatus.OK | HTTPStatus.Created | HTTPStatus.NoContent;
+type HTTPSuccess = 200 | 201 | 204;
 export type ApiPaths = keyof ApiSchema
 export type ApiOptions<Path extends ApiPaths> = ValuesType<{
   [Method in keyof ApiSchema[Path]]: RequestInit & OptionalDeep<Optional<{
@@ -42,5 +42,5 @@ export type ApiOptions<Path extends ApiPaths> = ValuesType<{
 }>
 export type ApiResponse<Path, Method, Type = "application/json"> = Get<
   ApiSchema,
-  [Path, Method, "responses", HTTPSuccess, "content", Type]
+  [Path, Method extends undefined | unknown ? 'get' : Method, "responses", HTTPSuccess, "content", Type]
 >;
