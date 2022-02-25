@@ -1,13 +1,16 @@
 <template>
-  <tr class:loading on:click={handleRowClick} bind:this={row}>
+  <tr on:click={actions.handleClick} bind:this={row}>
     <td></td>
     <td>
       <img src={file.thumbnail} alt=""/>
     </td>
-    <td class="filename">{file.name}</td>
+    <td class="filename">{filename}</td>
     <td>{sizeFormatter.format(file.size / 1000)}</td>
-    <td>
-      <button on:click|preventDefault|stopPropagation={handleDelete} disabled={loading}>
+    <td class="actions">
+      <button use:tooltip={"Copier le lien"} on:click|preventDefault|stopPropagation={actions.handleCopy}>
+        <IconCopy/>
+      </button>
+      <button use:tooltip={"Supprimer"} on:click|preventDefault|stopPropagation={actions.handleDelete}>
         <IconDelete/>
       </button>
     </td>
@@ -17,28 +20,21 @@
 <script lang="ts">
   import type { File } from '../types'
   import IconDelete from './icons/IconDelete.svelte'
-  import { useQueryClient } from '@sveltestack/svelte-query'
-  import { removeFile } from '../store'
+  import IconCopy from './icons/IconCopy.svelte'
+  import { tooltip } from '../actions/tooltip'
+  import { useFileActions } from '../hooks/useFileActions'
+  import { shorten } from '../functions/string'
 
   let row: HTMLTableRowElement
-  const queryClient = useQueryClient()
   const sizeFormatter = new Intl.NumberFormat(undefined, {
     style: 'unit',
     unit: 'kilobyte',
     unitDisplay: 'short',
     maximumSignificantDigits: 3
-  });
-  const loading = false
-  const handleDelete = () => {
-    if (!confirm('Voulez vous vraiment supprimer ce fichier ?')) {
-      return;
-    }
-    removeFile(queryClient, file);
-  }
-  const handleRowClick = () => {
-    row.dispatchEvent(new CustomEvent('selectfile', { detail: file, bubbles: true }))
-  }
+  } as any);
   export let file: File
+  $: actions = useFileActions(file, row)
+  $: filename = shorten(file.name, 35)
 </script>
 
 <style>
@@ -105,5 +101,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     padding-right: 1rem;
+  }
+
+  .actions {
+    flex: none;
+    width: 72px;
+    display: flex;
   }
 </style>

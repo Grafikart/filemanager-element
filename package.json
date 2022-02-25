@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@sveltestack/svelte-query": "^1.6.0",
-    "broadcast-channel": "^4.10.0"
+    "broadcast-channel": "^4.10.0",
+    "tippy.js": "^6.3.7"
   }
 }

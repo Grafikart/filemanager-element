@@ -21,6 +21,7 @@
   .sidebar {
     border-right: 1px solid var(--fm-border);
     padding: 24px;
+    overflow: auto;
   }
   .sidebar > :global(*) + :global(*)::before {
     content: "";

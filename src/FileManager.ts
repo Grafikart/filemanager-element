@@ -15,7 +15,8 @@ export class FileManager extends HTMLElement {
     this.fm = new FileManagerComponent({
       target: this,
       props: {
-        hidden: this.hidden
+        hidden: this.hidden,
+        layout: this.getAttribute('layout') || 'grid'
       }
     })
   }
