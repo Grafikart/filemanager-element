@@ -38,12 +38,6 @@
 </script>
 
 <style>
-  .loading {
-    opacity: .3;
-    animation: fmFadeRow infinite linear 2s .5s;
-    pointer-events: none;
-  }
-
   @keyframes fmFadeRow {
     0% {
       opacity: .3

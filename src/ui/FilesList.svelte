@@ -64,7 +64,7 @@
   let files = [] as File[];
   $: {
     files = $filesQuery.isSuccess
-      ? $filesQuery.data.filter((f) =>
+      ? $filesQuery.data.filter((f: File) =>
           $searchQuery ? f.name.includes($searchQuery) : true
         )
       : [];

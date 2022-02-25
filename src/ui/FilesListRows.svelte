@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import FileRow from './FileRow.svelte'
-import { File } from '../types'
+import type { File } from '../types'
 
 export let files: File[]
 </script>

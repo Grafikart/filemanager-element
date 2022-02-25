@@ -17,7 +17,7 @@
   import IconDelete from './icons/IconDelete.svelte'
   import { tooltip } from '../actions/tooltip'
 
-  let el: HTMLTableRowElement
+  let el: HTMLDivElement
   export let file: File
   $: filename = shorten(file.name, 30)
   $: actions = useFileActions(file, el)

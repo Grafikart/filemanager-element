@@ -6,11 +6,7 @@ import { objToQueryParams } from "./url";
 export function fetchApi<
   Path extends ApiPaths,
   Options extends ApiOptions<Path>
->(
-  baseUrl: string,
-  path: Path,
-  options: Options
-): Promise<ApiResponse<Path, Options["method"]>> {
+>(baseUrl: string, path: Path, options: Options) {
   const o = { ...options };
   let url = baseUrl + path;
   o.credentials = "include";
@@ -35,7 +31,7 @@ export function fetchApi<
       return null;
     }
     if (r.status >= HTTPStatus.OK && r.status < HTTPStatus.MultipleChoices) {
-      return r.json();
+      return r.json() as Promise<ApiResponse<Path, typeof options.method>>;
     }
     if (r.status === HTTPStatus.UnprocessableEntity) {
       const data = r.json().then((data) => {
