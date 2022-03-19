@@ -77,9 +77,9 @@
           {folder.name}
         </span>
       </span>
-      <button class="new-folder" on:click|preventDefault={handleAddFolder}
-        ><IconCirclePlus size={16} /></button
-      >
+      <button class="new-folder" on:click|preventDefault={handleAddFolder}>
+        <IconCirclePlus size={16} />
+      </button>
     </span>
     {#if addNewFolder}
       <NewFolder

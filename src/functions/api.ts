@@ -8,7 +8,10 @@ export function fetchApi<
   Options extends ApiOptions<Path>
 >(baseUrl: string, path: Path, options: Options) {
   const o = { ...options };
-  let url = baseUrl + path;
+  let url = new URL(
+    (baseUrl.startsWith("/") ? window.location.origin : "") + baseUrl
+  );
+  url.pathname = url.pathname + path;
   o.credentials = "include";
   o.headers = { ...o.headers };
   o.headers["Accept"] = "application/json";
@@ -18,15 +21,15 @@ export function fetchApi<
   }
   // Add query parameters into the URL
   if (o.query) {
-    url += `?${objToQueryParams(o.query).toString()}`;
+    objToQueryParams(o.query, url.searchParams);
   }
   // Replace params in the URL ("/path/{id}" for instance)
   if (o.params) {
     Object.keys(o.params).forEach(
-      (k) => (url = url.replace(`{${k}}`, o.params[k]))
+      (k) => (url.pathname = url.pathname.replace(`%7B${k}%7D`, o.params[k]))
     );
   }
-  return fetch(url, o).then((r) => {
+  return fetch(url.toString(), o).then((r) => {
     if (r.status === HTTPStatus.NoContent) {
       return null;
     }
@@ -34,7 +37,7 @@ export function fetchApi<
       return r.json() as Promise<ApiResponse<Path, typeof options.method>>;
     }
     if (r.status === HTTPStatus.UnprocessableEntity) {
-      const data = r.json().then((data) => {
+      r.json().then((data) => {
         if (data?.message) {
           flash(data.message, "danger");
         }
