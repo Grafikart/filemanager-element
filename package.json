@@ -22,7 +22,7 @@
   "types": "FileManager.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "svelte-check && tsc && vite build && STANDALONE=1 vite build && cp package.json dist/package.json && cp FileManager.d.ts dist/FileManager.d.ts",
+    "build": "svelte-check && tsc && vite build && STANDALONE=1 vite build && cp package.json dist/package.json && cp FileManager.d.ts dist/FileManager.d.ts && cp README.md dist/README.md",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "tsopenapi": "openapi-typescript openapi.yml --output src/types/generated-schema.ts"
