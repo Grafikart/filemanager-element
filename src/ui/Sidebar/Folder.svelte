@@ -14,12 +14,15 @@
   import { dragOver } from "../../actions/dragOver";
   import IconCirclePlus from "../icons/IconCirclePlus.svelte";
   import NewFolder from "./NewFolder.svelte";
+  import { nestFolder } from '../../functions/folders'
 
   const queryClient = useQueryClient();
   export let folder: Folder;
+  export let lazyLoad: boolean;
 
   let over = false;
   let addNewFolder = false;
+  let showChildren = !folder.id
 
   const handleDragOver = () => (over = true);
   const handleDragLeave = () => (over = false);
@@ -30,28 +33,43 @@
   };
   const handleAddFolder = () => {
     addNewFolder = true;
-    if (!$children.isSuccess) {
-      $children.refetch();
+    if (!$childrenQuery.isSuccess && folder.children === undefined) {
+      $childrenQuery.refetch();
     }
   };
   const exitAddFolder = () => {
     addNewFolder = false;
   };
   const loadChildren = () => {
+    // Unfold the directory if it's already selected
+    if (showChildren && $currentFolder === folder) {
+      showChildren = false
+      return
+    }
+    showChildren = true
     $currentFolder = folder;
-    $children.refetch();
+    // Do not prefetch if we already have children loaded
+    if (folder.children === undefined) {
+      $childrenQuery.refetch();
+    }
   };
 
-  const children = useQuery(
+  const childrenQuery = useQuery(
     foldersQueryKey(folder.id),
-    () =>
-      fetchApi(config.endpoint, "/folders", {
+    () => fetchApi(config.endpoint, '/folders', {
         query: {
-          parent: folder?.id.toString(),
-        },
+          parent: folder?.id?.toString()
+        }
       }),
     { enabled: !folder.id }
   );
+
+  let children: Folder[] | null = null
+  $: {
+    if ($childrenQuery.isSuccess) {
+      children = (lazyLoad ? $childrenQuery.data : nestFolder($childrenQuery.data)).filter((f: Folder) => f.parent === folder.id);
+    }
+  }
 </script>
 
 <template>
@@ -68,7 +86,7 @@
         on:dropzoneleave={handleDragLeave}
         on:drop={handleDrop}
       >
-        {#if $children.isLoading}
+        {#if $childrenQuery.isLoading}
           <IconLoader size={20} class="folder-loader" />
         {:else}
           <IconFolder class="folder-icon" />
@@ -88,8 +106,10 @@
         on:cancel={exitAddFolder}
       />
     {/if}
-    {#if $children.isSuccess}
-      <Folders folders={$children.data} />
+    {#if folder.children && showChildren}
+      <Folders folders={folder.children} lazyLoad={lazyLoad} />
+    {:else if children && showChildren}
+      <Folders folders={children} lazyLoad={lazyLoad} />
     {/if}
   </li>
 </template>

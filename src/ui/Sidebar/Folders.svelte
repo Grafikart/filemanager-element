@@ -1,7 +1,7 @@
 <template>
   <ul class="folders">
     {#each folders as folder}
-      <Folder folder={folder}/>
+      <Folder folder={folder} lazyLoad={lazyLoad}/>
     {/each}
   </ul>
 </template>
@@ -11,6 +11,7 @@
   import Folder from './Folder.svelte'
 
   export let folders: FolderType[]
+  export let lazyLoad: boolean
 </script>
 
 <style>

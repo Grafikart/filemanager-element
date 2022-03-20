@@ -3,8 +3,10 @@
   import Folders from "./Folders.svelte";
   import Search from "./Search.svelte";
 
+  export let lazyFolders: boolean
+
   const root: Folder = {
-    id: "",
+    id: null,
     name: "/",
     parent: null,
   };
@@ -13,7 +15,7 @@
 <template>
   <aside class="sidebar">
     <Search />
-    <Folders folders={[root]} />
+    <Folders folders={[root]} lazyLoad={lazyFolders} />
   </aside>
 </template>
 

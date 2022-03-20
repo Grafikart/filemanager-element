@@ -79,19 +79,24 @@ export const useCreateFolderMutation = () => {
       fetchApi(config.endpoint, "/folders", {
         method: "post",
         json: {
-          parent: parent.id,
+          parent: parent.id!,
           name: name,
         },
       }),
     {
       onSuccess(folder: Folder) {
-        const queryKey = foldersQueryKey(folder.parent);
-        const state = queryClient.getQueryState(queryKey);
-        if (state?.data) {
-          queryClient.setQueryData<Folder[]>(queryKey, (folders) =>
-            folders ? [folder, ...folders] : [folder]
-          );
-        }
+        // Add the new folder into a specific cache
+        const addToCache = (parent: Folder["parent"]) => {
+          const queryKey = foldersQueryKey(parent);
+          const state = queryClient.getQueryState(queryKey);
+          if (state?.data) {
+            queryClient.setQueryData<Folder[]>(queryKey, (folders) =>
+              folders ? [folder, ...folders] : [folder]
+            );
+          }
+        };
+        addToCache(folder.parent);
+        addToCache(null);
       },
     }
   );
@@ -104,7 +109,7 @@ export const useDeleteFolderMutation = () => {
       fetchApi(config.endpoint, "/folders/{id}", {
         method: "delete",
         params: {
-          id: folder.id.toString(),
+          id: folder.id!.toString(),
         },
       }).then((r) => folder),
     {

@@ -1,12 +1,17 @@
 import type { components } from "./generated-schema";
 
-export type Folder = components["schemas"]["Folder"];
+export type Folder = {
+  children?: components["schemas"]["Folder"][];
+  id: components["schemas"]["ID"] | null;
+  name: string;
+  parent: components["schemas"]["ID"] | null;
+};
 export type File = components["schemas"]["File"];
 export type FlashMessage = {
-  type: 'success' | 'danger',
-  message: string,
-  id: number
-}
+  type: "success" | "danger";
+  message: string;
+  id: number;
+};
 export type ID = string | number;
 export type Props = { [key: string]: any };
 

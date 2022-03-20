@@ -4,7 +4,7 @@
       <div class="root">
         <div class="overlay" transition:fly={{duration: 300}}>
           <div class="modal" transition:fly={{y: -30, duration: 500}} use:clickOutside={'close'}>
-            <Sidebar/>
+            <Sidebar lazyFolders={lazyFolders}/>
             <Dropzone>
               {#key $folder?.id}
                 <FilesList folder={$folder} layout={layout}/>
@@ -30,6 +30,7 @@
 
   export let hidden: boolean
   export let layout: 'grid' | 'rows'
+  export let lazyFolders: boolean
 
   const queryClient = new QueryClient({
     defaultOptions: {

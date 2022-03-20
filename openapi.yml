@@ -218,4 +218,3 @@ components:
       oneOf:
         - type: string
         - type: integer
-

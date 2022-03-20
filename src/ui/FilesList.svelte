@@ -56,7 +56,7 @@
   const filesQuery = useQuery(filesQueryKey(folder?.id), () =>
     fetchApi(config.endpoint, "/files", {
       query: {
-        folder: folder?.id.toString() || undefined,
+        folder: folder?.id!.toString() || undefined,
       },
     })
   );

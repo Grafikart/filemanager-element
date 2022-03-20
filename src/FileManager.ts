@@ -19,6 +19,7 @@ export class FileManager extends HTMLElement {
       props: {
         hidden: this.hidden,
         layout: this.getAttribute("layout") || "grid",
+        lazyFolders: this.hasAttribute("lazy-folders"),
       },
     });
   }
