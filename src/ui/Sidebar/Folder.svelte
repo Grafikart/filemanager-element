@@ -15,6 +15,8 @@
   import IconCirclePlus from "../icons/IconCirclePlus.svelte";
   import NewFolder from "./NewFolder.svelte";
   import { nestFolder } from '../../functions/folders'
+  import { t } from '../../lang'
+  import { tooltip } from '../../actions/tooltip'
 
   const queryClient = useQueryClient();
   export let folder: Folder;
@@ -95,7 +97,7 @@
           {folder.name}
         </span>
       </span>
-      <button class="new-folder" on:click|preventDefault={handleAddFolder}>
+      <button class="new-folder" on:click|preventDefault={handleAddFolder} use:tooltip={t('createFolder')}>
         <IconCirclePlus size={16} />
       </button>
     </span>

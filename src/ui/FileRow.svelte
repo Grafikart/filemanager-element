@@ -7,10 +7,10 @@
     <td class="filename">{filename}</td>
     <td>{sizeFormatter.format(file.size / 1000)}</td>
     <td class="actions">
-      <button use:tooltip={"Copier le lien"} on:click|preventDefault|stopPropagation={actions.handleCopy}>
+      <button use:tooltip={t("copy")} on:click|preventDefault|stopPropagation={actions.handleCopy}>
         <IconCopy/>
       </button>
-      <button use:tooltip={"Supprimer"} on:click|preventDefault|stopPropagation={actions.handleDelete}>
+      <button use:tooltip={t("delete")} on:click|preventDefault|stopPropagation={actions.handleDelete}>
         <IconDelete/>
       </button>
     </td>
@@ -24,6 +24,7 @@
   import { tooltip } from '../actions/tooltip'
   import { useFileActions } from '../hooks/useFileActions'
   import { shorten } from '../functions/string'
+  import { t } from '../lang'
 
   let row: HTMLTableRowElement
   const sizeFormatter = new Intl.NumberFormat(undefined, {

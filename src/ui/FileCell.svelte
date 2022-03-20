@@ -2,7 +2,7 @@
   <div class="container" on:click={actions.handleClick} bind:this={el}>
     <div class="thumbnail">
       <img src={file.thumbnail} alt=""/>
-      <button use:tooltip={"Supprimer"}  on:click|preventDefault|stopPropagation={actions.handleDelete}>
+      <button use:tooltip={t("delete")}  on:click|preventDefault|stopPropagation={actions.handleDelete}>
         <IconDelete/>
       </button>
     </div>
@@ -16,6 +16,7 @@
   import { useFileActions } from '../hooks/useFileActions'
   import IconDelete from './icons/IconDelete.svelte'
   import { tooltip } from '../actions/tooltip'
+  import { t } from '../lang'
 
   let el: HTMLDivElement
   export let file: File

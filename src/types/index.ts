@@ -1,4 +1,5 @@
 import type { components } from "./generated-schema";
+import type FR from "../langs/fr";
 
 export type Folder = {
   children?: components["schemas"]["Folder"][];
@@ -6,6 +7,7 @@ export type Folder = {
   name: string;
   parent: components["schemas"]["ID"] | null;
 };
+export type Lang = typeof FR;
 export type File = components["schemas"]["File"];
 export type FlashMessage = {
   type: "success" | "danger";

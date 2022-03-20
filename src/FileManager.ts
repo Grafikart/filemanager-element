@@ -1,5 +1,6 @@
 import FileManagerComponent from "./FileManager.svelte";
 import config from "./config";
+import { setLang } from "./lang";
 
 export class FileManager extends HTMLElement {
   private fm: FileManagerComponent | null = null;
@@ -14,6 +15,7 @@ export class FileManager extends HTMLElement {
     if (!config.endpoint) {
       throw new Error("You must define an endpoint for this custom element");
     }
+    setLang(document.documentElement.getAttribute("lang") || "en");
     this.fm = new FileManagerComponent({
       target: this,
       props: {

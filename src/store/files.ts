@@ -121,14 +121,21 @@ export const useDeleteFolderMutation = () => {
     {
       onSuccess: (folder: Folder) => {
         // If we are deleting the current directory, back to the parent
-        folderStore.update((f: Folder | null) =>
-          f?.id === folder.id ? null : f
-        );
-        queryClient.setQueryData<Folder[]>(
-          foldersQueryKey(folder.parent),
-          (folders) =>
-            folders ? folders.filter((f) => f.id !== folder.id) : []
-        );
+        folderStore.update((f: Folder | null) => rootFolder);
+        // Update the store (both the root and this depth
+        const updateData = (parent: Folder["id"]) => {
+          const queryKey = foldersQueryKey(parent);
+          const state = queryClient.getQueryState(queryKey);
+          if (state?.data) {
+            queryClient.setQueryData<Folder[]>(
+              foldersQueryKey(parent),
+              (folders) =>
+                folders ? folders.filter((f) => f.id !== folder.id) : []
+            );
+          }
+        };
+        updateData(folder.parent);
+        updateData(null);
       },
     }
   );

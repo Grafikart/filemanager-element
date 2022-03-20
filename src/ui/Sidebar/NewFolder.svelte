@@ -8,6 +8,8 @@
   import IconButton from "../icons/IconButton.svelte";
   import type { Folder } from "../../types";
   import IconLoader from "../icons/IconLoader.svelte";
+  import { t } from '../../lang'
+
   export let parent: Folder;
   const createFolderMutation = useCreateFolderMutation();
   const handleSubmit = async (e: SubmitEvent) => {
@@ -34,7 +36,7 @@
     <IconFolder />
     <input
       type="text"
-      placeholder="Nom du dossier"
+      placeholder={t('newFolderPlaceholder')}
       name="name"
       required
       use:autofocus

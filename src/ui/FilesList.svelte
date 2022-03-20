@@ -11,8 +11,8 @@
     </div>
   {:else}
     <div class="empty">
-      <p class="big">Ce dossier est vide :(</p>
-      <p>Déposer un fichier ici pour le téléverser</p>
+      <p class="big">{t('emptyTitle')}</p>
+      <p>{t('emptyDescription')}</p>
       {#if isEmpty}
         <button
                 class="delete-folder"
@@ -22,7 +22,7 @@
           {#if $deleteFolder.isLoading}
             <IconLoader size={12}/>
           {/if}
-          Supprimer le dossier
+          {t('deleteFolder')}
         </button>
       {/if}
     </div>
@@ -43,6 +43,7 @@
   import type { File, Folder } from "../types";
   import FilesListRows from './FilesListRows.svelte'
   import FilesListGrid from './FilesListGrid.svelte'
+  import { t } from '../lang'
 
   export let layout: 'grid' | 'rows'
   export let folder: Folder | null;

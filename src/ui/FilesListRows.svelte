@@ -4,8 +4,8 @@
     <tr>
       <th></th>
       <th></th>
-      <th>Nom</th>
-      <th>Taille</th>
+      <th>{t('filename')}</th>
+      <th>{t('size')}</th>
       <th></th>
     </tr>
     </thead>
@@ -20,6 +20,7 @@
 <script lang="ts">
 import FileRow from './FileRow.svelte'
 import type { File } from '../types'
+import { t } from '../lang'
 
 export let files: File[]
 </script>
