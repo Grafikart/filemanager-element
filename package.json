@@ -2,9 +2,27 @@
   "name": "filemanager-element",
   "version": "0.0.1",
   "type": "module",
+  "main": "FileManager.js",
+  "homepage": "https://github.com/Grafikart/FileManagerJS#README",
+  "keywords": [
+    "Custom Elements",
+    "Web Components",
+    "HTML",
+    "File Manager"
+  ],
+  "bugs": {
+    "url": "https://github.com/Grafikart/FileManagerJS/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Grafikart/FileManagerJS"
+  },
+  "author": "Jonathan Boyer",
+  "license": "MIT",
+  "types": "FileManager.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "svelte-check && tsc && vite build",
+    "build": "svelte-check && tsc && vite build && STANDALONE=1 vite build && cp package.json dist/package.json && cp FileManager.d.ts dist/FileManager.d.ts",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "tsopenapi": "openapi-typescript openapi.yml --output src/types/generated-schema.ts"
@@ -14,7 +32,6 @@
     "@tsconfig/svelte": "^2.0.1",
     "openapi-typescript": "^5.1.1",
     "prettier": "^2.5.1",
-    "svelte": "^3.44.0",
     "svelte-check": "^2.2.7",
     "svelte-preprocess": "^4.9.8",
     "tslib": "^2.3.1",
@@ -25,6 +42,7 @@
   "dependencies": {
     "@sveltestack/svelte-query": "^1.6.0",
     "broadcast-channel": "^4.10.0",
+    "svelte": "^3.44.0",
     "tippy.js": "^6.3.7"
   }
 }

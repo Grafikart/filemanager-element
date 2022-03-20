@@ -4,6 +4,7 @@ import { setLang } from "./lang";
 
 export class FileManager extends HTMLElement {
   private fm: FileManagerComponent | null = null;
+  static registered = false;
 
   static get observedAttributes() {
     return ["hidden", "endpoint"];
@@ -39,7 +40,10 @@ export class FileManager extends HTMLElement {
     this?.fm?.$destroy();
   }
 
-  static define(name = "file-manager") {
-    customElements.define(name, FileManager);
+  static register(name = "file-manager") {
+    if (this.registered === false) {
+      customElements.define(name, FileManager);
+      this.registered = true;
+    }
   }
 }

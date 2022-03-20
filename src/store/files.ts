@@ -102,7 +102,9 @@ export const useCreateFolderMutation = () => {
           }
         };
         addToCache(folder.parent);
-        addToCache(null);
+        if (folder.parent) {
+          addToCache(null);
+        }
       },
     }
   );
