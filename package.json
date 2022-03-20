@@ -1,6 +1,6 @@
 {
   "name": "filemanager-element",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "main": "FileManager.standalone.js",
   "homepage": "https://github.com/Grafikart/FileManagerJS#README",
@@ -37,9 +37,7 @@
     "tslib": "^2.3.1",
     "typescript": "^4.5.4",
     "utility-types": "^3.10.0",
-    "vite": "^2.8.0"
-  },
-  "dependencies": {
+    "vite": "^2.8.0",
     "@sveltestack/svelte-query": "^1.6.0",
     "broadcast-channel": "^4.10.0",
     "svelte": "^3.46.4",

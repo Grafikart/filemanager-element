@@ -77,8 +77,8 @@
   });
   $: isEmpty =
     folder?.id &&
-    $folders.isSuccess &&
-    $folders?.data?.length === 0 &&
+    (folder?.children && folder.children.length === 0 || $folders.isSuccess &&
+    $folders?.data?.length === 0) &&
     $filesQuery.isSuccess &&
     $filesQuery?.data?.length === 0;
 </script>
