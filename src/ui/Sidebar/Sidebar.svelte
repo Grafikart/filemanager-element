@@ -2,14 +2,11 @@
   import type { Folder } from "../../types";
   import Folders from "./Folders.svelte";
   import Search from "./Search.svelte";
+  import { rootFolder } from '../../store'
 
   export let lazyFolders: boolean
 
-  const root: Folder = {
-    id: null,
-    name: "/",
-    parent: null,
-  };
+  const root: Folder = rootFolder;
 </script>
 
 <template>

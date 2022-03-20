@@ -5,6 +5,12 @@ import { fetchApi } from "../functions/api";
 import config from "../config";
 import { useMutation, useQueryClient } from "@sveltestack/svelte-query";
 
+export const rootFolder = {
+  id: null,
+  name: "/",
+  parent: null,
+};
+
 /**
  * Helpers
  */
@@ -16,7 +22,7 @@ export const foldersQueryKey = (parentId?: Folder["id"] | null) =>
 /**
  * Store
  */
-const folderStore = writable<Folder | null>(null);
+const folderStore = writable<Folder>(rootFolder);
 
 export const folder = folderStore;
 export const searchQuery = writable("");

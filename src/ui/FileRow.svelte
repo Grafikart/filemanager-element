@@ -83,7 +83,7 @@
     width: 100%;
     max-height: 100px;
     object-fit: cover;
-    filter: drop-shadow(0px 1px 4px rgba(16, 43, 107, 0.6));
+    filter: drop-shadow(0px 1px 4px rgba(16, 43, 107, 0.2));
     border-radius: 6px;
   }
 
