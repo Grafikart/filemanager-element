@@ -1,8 +1,8 @@
 {
   "name": "filemanager-element",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
-  "main": "FileManager.js",
+  "main": "FileManager.standalone.js",
   "homepage": "https://github.com/Grafikart/FileManagerJS#README",
   "keywords": [
     "Custom Elements",
@@ -42,7 +42,7 @@
   "dependencies": {
     "@sveltestack/svelte-query": "^1.6.0",
     "broadcast-channel": "^4.10.0",
-    "svelte": "^3.44.0",
+    "svelte": "^3.46.4",
     "tippy.js": "^6.3.7"
   }
 }
