@@ -1,4 +1,4 @@
-# <file-manager> custom element
+# file-manager custom element
 
 [![npm](https://img.shields.io/npm/v/filemanager-element.svg)](http://npm.im/filemanager-element)
 [![Build Status](https://github.com/Grafikart/FileManagerJS/workflows/Test/badge.svg)](https://github.com/Grafikart/FileManagerJS/actions)
@@ -35,3 +35,19 @@ filemanager.addEventListener("selectfile", e => {
   console.log("fileSelected", e.detail);
 });
 ```
+
+## Attributes
+
+| Attribute    | Description                                                 | Default |
+|--------------|-------------------------------------------------------------|---------|
+| endpoint     | The base url for the file and folder API                    |         |
+| layout       | Files layout "rows" or "grid"                               | grid    |
+| lazy-folders | Should all folder be lazy loaded with a new call to the API | false   |
+| hidden       | Work like the default HTML attribute                        | false   |
+
+## Events
+
+| Name         | Description                                        |
+|--------------|----------------------------------------------------|
+| close        | The user clicked on the overlay to close the modal |
+| fileSelected | The use selected a file                            |
