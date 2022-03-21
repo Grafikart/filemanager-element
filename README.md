@@ -1,7 +1,7 @@
 # file-manager custom element
 
 [![npm](https://img.shields.io/npm/v/filemanager-element.svg)](http://npm.im/filemanager-element)
-[![Publish](https://github.com/Grafikart/FileManagerJS/actions/workflows/deploy.yml/badge.svg)](https://github.com/Grafikart/FileManagerJS/actions/workflows/deploy.yml)
+[![Test](https://github.com/Grafikart/FileManagerJS/actions/workflows/test.yml/badge.svg)](https://github.com/Grafikart/FileManagerJS/actions/workflows/test.yml)
 
 ![](./screenshot.jpg)
 
