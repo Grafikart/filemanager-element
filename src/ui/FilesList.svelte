@@ -34,8 +34,8 @@
     useDeleteFolderMutation,
     filesQueryKey,
     foldersQueryKey,
-    searchQuery,
-  } from "../store";
+    searchQuery, flash
+  } from '../store';
   import { useQuery } from "../query";
   import config from "../config";
   import { fetchApi } from "../functions/api";
@@ -59,7 +59,12 @@
       query: {
         folder: folder?.id ? folder.id.toString() : undefined,
       },
-    })
+    }),
+    {
+      onError () {
+        flash(t('filesError'), 'danger')
+      }
+    }
   );
 
   let files = [] as File[];

@@ -1,19 +1,20 @@
 <script lang="ts">
-  import type { Folder } from "../../types";
-  import { useQuery, useQueryClient } from "../../query";
-  import { fetchApi } from "../../functions/api";
-  import config from "../../config";
-  import IconLoader from "../icons/IconLoader.svelte";
-  import IconFolder from "../icons/IconFolder.svelte";
-  import Folders from "./Folders.svelte";
+  import type { Folder } from '../../types';
+  import { useQuery, useQueryClient } from '../../query';
+  import { fetchApi } from '../../functions/api';
+  import config from '../../config';
+  import IconLoader from '../icons/IconLoader.svelte';
+  import IconFolder from '../icons/IconFolder.svelte';
+  import Folders from './Folders.svelte';
   import {
+    flash,
     folder as currentFolder,
     foldersQueryKey,
-    uploadFile,
-  } from "../../store";
-  import { dragOver } from "../../actions/dragOver";
-  import IconCirclePlus from "../icons/IconCirclePlus.svelte";
-  import NewFolder from "./NewFolder.svelte";
+    uploadFile
+  } from '../../store';
+  import { dragOver } from '../../actions/dragOver';
+  import IconCirclePlus from '../icons/IconCirclePlus.svelte';
+  import NewFolder from './NewFolder.svelte';
   import { nestFolder } from '../../functions/folders'
   import { t } from '../../lang'
   import { tooltip } from '../../actions/tooltip'
@@ -59,11 +60,16 @@
   const childrenQuery = useQuery(
     foldersQueryKey(folder.id),
     () => fetchApi(config.endpoint, '/folders', {
-        query: {
-          parent: folder?.id?.toString()
-        }
-      }),
-    { enabled: !folder.id }
+      query: {
+        parent: folder?.id?.toString()
+      }
+    }),
+    {
+      enabled: !folder.id,
+      onError () {
+        flash(t('foldersError'), 'danger')
+      }
+    }
   );
 
   let children: Folder[] | null = null
@@ -77,41 +83,41 @@
 <template>
   <li>
     <span
-      class="wrapper"
-      class:active={folder.id === $currentFolder?.id || over}
+            class="wrapper"
+            class:active={folder.id === $currentFolder?.id || over}
     >
       <span
-        class="folder"
-        use:dragOver
-        on:click|preventDefault={loadChildren}
-        on:dropzoneover={handleDragOver}
-        on:dropzoneleave={handleDragLeave}
-        on:drop={handleDrop}
+              class="folder"
+              use:dragOver
+              on:click|preventDefault={loadChildren}
+              on:dropzoneover={handleDragOver}
+              on:dropzoneleave={handleDragLeave}
+              on:drop={handleDrop}
       >
         {#if $childrenQuery.isLoading}
-          <IconLoader size={20} class="folder-loader" />
+          <IconLoader size={20} class="folder-loader"/>
         {:else}
-          <IconFolder class="folder-icon" />
+          <IconFolder class="folder-icon"/>
         {/if}
         <span class="name">
           {folder.name}
         </span>
       </span>
       <button class="new-folder" on:click|preventDefault={handleAddFolder} use:tooltip={t('createFolder')}>
-        <IconCirclePlus size={16} />
+        <IconCirclePlus size={16}/>
       </button>
     </span>
     {#if addNewFolder}
       <NewFolder
-        parent={folder}
-        on:submit={exitAddFolder}
-        on:cancel={exitAddFolder}
+              parent={folder}
+              on:submit={exitAddFolder}
+              on:cancel={exitAddFolder}
       />
     {/if}
     {#if folder.children && showChildren}
-      <Folders folders={folder.children} lazyLoad={lazyLoad} />
+      <Folders folders={folder.children} lazyLoad={lazyLoad}/>
     {:else if children && showChildren}
-      <Folders folders={children} lazyLoad={lazyLoad} />
+      <Folders folders={children} lazyLoad={lazyLoad}/>
     {/if}
   </li>
 </template>

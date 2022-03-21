@@ -3,6 +3,7 @@ import { isPromise } from "../functions/promise";
 
 export type QueryOptions = {
   enabled?: boolean;
+  onError?: () => void;
 };
 
 export type QueryState<Data> = {
@@ -28,6 +29,7 @@ export class Query<Data> {
       const response = cb();
       if (isPromise(response)) {
         response.then(this.setData).catch((e: unknown) => {
+          options.onError?.();
           this.store.update((v) => ({
             ...v,
             isLoading: false,

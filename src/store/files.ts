@@ -3,6 +3,9 @@ import type { File, Folder } from "../types";
 import { QueryClient, useMutation, useQueryClient } from "../query";
 import { fetchApi } from "../functions/api";
 import config from "../config";
+import { HTTPStatus } from "../types";
+import { t } from "../lang";
+import { flash } from "./flash";
 
 export const rootFolder = {
   id: null,
@@ -44,8 +47,13 @@ export const removeFile = async (queryClient: QueryClient, file: File) => {
         id: file.id.toString(),
       },
     });
-  } catch {
-    alert(`Impossible de supprimer l'image ${file.name}`);
+  } catch (e) {
+    if (
+      !(e instanceof Response) ||
+      e.status !== HTTPStatus.UnprocessableEntity
+    ) {
+      flash(t(`serverError`), "danger");
+    }
     queryClient.setQueryData(queryKey, oldData);
   }
 };
@@ -72,8 +80,12 @@ export const uploadFile = async (
       );
     }
   } catch (e) {
-    console.error(e);
-    alert(`Impossible de téléverser ce fichier`);
+    if (
+      !(e instanceof Response) ||
+      e.status !== HTTPStatus.UnprocessableEntity
+    ) {
+      flash(t(`serverError`), "danger");
+    }
   }
 };
 
@@ -103,6 +115,14 @@ export const useCreateFolderMutation = () => {
         addToCache(folder.parent);
         if (folder.parent) {
           addToCache(null);
+        }
+      },
+      onError(e) {
+        if (
+          !(e instanceof Response) ||
+          e.status !== HTTPStatus.UnprocessableEntity
+        ) {
+          flash(t(`serverError`), "danger");
         }
       },
     }

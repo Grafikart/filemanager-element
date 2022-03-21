@@ -1,10 +1,10 @@
 export function tooltip(node: HTMLElement, title: string) {
+  let tooltip = null as HTMLElement | null;
   const onMouveOver = () => {
     const rect = node.getBoundingClientRect();
-    console.log("over");
 
     // Create the tooltip
-    const tooltip = document.createElement("div");
+    tooltip = document.createElement("div");
     tooltip.classList.add("fm-tooltip");
     tooltip.innerText = title;
     const root = node.closest(".fm-root")!;
@@ -26,13 +26,15 @@ export function tooltip(node: HTMLElement, title: string) {
     node.addEventListener(
       "pointerleave",
       () => {
-        tooltip.animate([{ opacity: 1 }, { opacity: 0 }], {
-          duration: 200,
-          easing: "ease-in-out",
-        });
-        window.setTimeout(() => {
-          tooltip.remove();
-        }, 200);
+        if (tooltip) {
+          tooltip.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 200,
+            easing: "ease-in-out",
+          });
+          window.setTimeout(() => {
+            tooltip?.remove();
+          }, 200);
+        }
       },
       { once: true }
     );
@@ -41,6 +43,7 @@ export function tooltip(node: HTMLElement, title: string) {
 
   return {
     destroy() {
+      tooltip?.remove();
       node.removeEventListener("pointerenter", onMouveOver);
     },
   };
