@@ -1,6 +1,7 @@
 import FileManagerComponent from "./FileManager.svelte";
 import config from "./config";
 import { setLang } from "./lang";
+import { QueryClient } from "./query";
 
 export class FileManager extends HTMLElement {
   private fm: FileManagerComponent | null = null;

@@ -1,9 +1,9 @@
 <template>
   <QueryClientProvider client={queryClient}>
     {#if !hidden}
-      <div class="root">
-        <div class="overlay" transition:fly={{duration: 300}}>
-          <div class="modal" transition:fly={{y: -30, duration: 500}} use:clickOutside={'close'}>
+      <div class="fm-root">
+        <div class="fm-overlay" transition:fly={{duration: 300}}>
+          <div class="fm-modal" transition:fly={{y: -30, duration: 500}} use:clickOutside={'close'}>
             <Sidebar lazyFolders={lazyFolders}/>
             <Dropzone>
               {#key $folder?.id}
@@ -22,7 +22,7 @@
   import { clickOutside } from './actions/clickOutside'
   import { fly } from 'svelte/transition'
   import Sidebar from './ui/Sidebar/Sidebar.svelte'
-  import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query'
+  import { QueryClient, QueryClientProvider } from './query'
   import Dropzone from './ui/Dropzone.svelte'
   import FilesList from './ui/FilesList.svelte'
   import Alerts from './ui/Alerts/Alerts.svelte'
@@ -32,18 +32,11 @@
   export let layout: 'grid' | 'rows'
   export let lazyFolders: boolean
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        staleTime: 60000
-      }
-    }
-  })
+  const queryClient = new QueryClient()
 </script>
 
 <style>
-  .root {
+  .fm-root {
     --fm-color: #212944;
     --fm-red: #d04747;
     --fm-green: #72ab39;
@@ -62,22 +55,22 @@
     --fm-contrastTransparent: #457CFF33;
   }
 
-  .root :global(*::-webkit-scrollbar) {
+  .fm-root :global(*::-webkit-scrollbar) {
     width: 7px;
     height: 7px;
   }
 
-  .root :global(*::-webkit-scrollbar-track) {
+  .fm-root :global(*::-webkit-scrollbar-track) {
     background: var(--fm-background);
     padding: 1px;
   }
 
-  .root :global(*::-webkit-scrollbar-thumb) {
+  .fm-root :global(*::-webkit-scrollbar-thumb) {
     background: var(--fm-border);
     border-radius: 4px;
   }
 
-  .overlay {
+  .fm-overlay {
     background-color: var(--fm-overlay);
     position: fixed;
     top: 0;
@@ -89,7 +82,7 @@
     justify-content: center;
   }
 
-  .modal {
+  .fm-modal {
     position: relative;
     display: grid;
     grid-template-columns: 278px 1fr;
@@ -104,4 +97,35 @@
     box-shadow: var(--fm-shadow);
     border-radius: 8px;
   }
+
+  .fm-root :global(.fm-tooltip) {
+    pointer-events: none;
+    z-index: 9999;
+    visibility: visible;
+    position: absolute;
+    padding: 5px 9px;
+    inset: 0 auto auto 0;
+    margin: 0px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: normal;
+    outline: 0;
+    transition-property: transform,visibility,opacity;
+  }
+
+  .fm-root :global(.fm-tooltip::after) {
+    content: "";
+    position: absolute;
+    border-color: transparent;
+    border-style: solid;
+    bottom: -7px;
+    left: calc(50% - 8px);
+    border-width: 8px 8px 0;
+    border-top-color: #333;
+    transform-origin: center top;
+  }
+
 </style>

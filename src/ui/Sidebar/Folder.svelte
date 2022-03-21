@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Folder } from "../../types";
-  import { useQuery, useQueryClient } from "@sveltestack/svelte-query";
+  import { useQuery, useQueryClient } from "../../query";
   import { fetchApi } from "../../functions/api";
   import config from "../../config";
   import IconLoader from "../icons/IconLoader.svelte";

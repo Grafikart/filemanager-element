@@ -36,7 +36,7 @@
     foldersQueryKey,
     searchQuery,
   } from "../store";
-  import { useQuery } from "@sveltestack/svelte-query";
+  import { useQuery } from "../query";
   import config from "../config";
   import { fetchApi } from "../functions/api";
   import IconLoader from "./icons/IconLoader.svelte";

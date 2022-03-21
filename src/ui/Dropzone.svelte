@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconUpload from "./icons/IconUpload.svelte";
   import { dragOver } from "../actions/dragOver";
-  import { useQueryClient } from "@sveltestack/svelte-query";
+  import { useQueryClient } from "../query";
   import { uploadFile, folder } from "../store";
   let over = false;
   const handleDragOver = () => (over = true);

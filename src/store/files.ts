@@ -1,9 +1,8 @@
 import { writable } from "svelte/store";
-import type { File, FlashMessage, Folder } from "../types";
-import type { QueryClient } from "@sveltestack/svelte-query";
+import type { File, Folder } from "../types";
+import { QueryClient, useMutation, useQueryClient } from "../query";
 import { fetchApi } from "../functions/api";
 import config from "../config";
-import { useMutation, useQueryClient } from "@sveltestack/svelte-query";
 
 export const rootFolder = {
   id: null,

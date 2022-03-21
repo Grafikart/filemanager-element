@@ -1,5 +1,5 @@
 import type { File } from "../types";
-import { useQueryClient } from "@sveltestack/svelte-query";
+import { useQueryClient } from "../query";
 import { flash, removeFile } from "../store";
 import { t } from "../lang";
 
