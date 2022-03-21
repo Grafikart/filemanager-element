@@ -10,19 +10,19 @@
 </script>
 
 <template>
-  <aside class="sidebar">
+  <aside class="fm-sidebar">
     <Search />
     <Folders folders={[root]} lazyLoad={lazyFolders} />
   </aside>
 </template>
 
 <style>
-  .sidebar {
+  .fm-sidebar {
     border-right: 1px solid var(--fm-border);
     padding: 24px;
     overflow: auto;
   }
-  .sidebar > :global(*) + :global(*)::before {
+  .fm-sidebar > :global(*) + :global(*)::before {
     content: "";
     display: block;
     height: 1px;

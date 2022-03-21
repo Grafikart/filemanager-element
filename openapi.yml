@@ -196,7 +196,6 @@ components:
         - name
         - url
         - folder
-        - size
         - thumbnail
       properties:
         id:

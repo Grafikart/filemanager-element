@@ -1,5 +1,5 @@
 <template>
-  <ul class="folders">
+  <ul class="fm-folders">
     {#each folders as folder}
       <Folder folder={folder} lazyLoad={lazyLoad}/>
     {/each}
@@ -15,14 +15,14 @@
 </script>
 
 <style>
-  .folders,
-  .folders :global(li) {
+  .fm-folders,
+  .fm-folders :global(li) {
     margin: 0;
     list-style: none;
     padding: 0;
   }
 
-  .folders :global(ul) {
+  .fm-folders :global(ul) {
     margin-left: 25px;
   }
 </style>

@@ -83,11 +83,11 @@
 <template>
   <li>
     <span
-            class="wrapper"
+            class="fm-folder-wrapper"
             class:active={folder.id === $currentFolder?.id || over}
     >
       <span
-              class="folder"
+              class="fm-folder"
               use:dragOver
               on:click|preventDefault={loadChildren}
               on:dropzoneover={handleDragOver}
@@ -99,11 +99,11 @@
         {:else}
           <IconFolder class="folder-icon"/>
         {/if}
-        <span class="name">
+        <span class="fm-folder-name">
           {folder.name}
         </span>
       </span>
-      <button class="new-folder" on:click|preventDefault={handleAddFolder} use:tooltip={t('createFolder')}>
+      <button class="fm-new-folder" on:click|preventDefault={handleAddFolder} use:tooltip={t('createFolder')}>
         <IconCirclePlus size={16}/>
       </button>
     </span>
@@ -123,19 +123,19 @@
 </template>
 
 <style>
-  .wrapper {
+  .fm-folder-wrapper {
     display: block;
     position: relative;
     --fm-folderColor: var(--fm-iconColor);
     --fm-nameColor: var(--fm-color);
   }
 
-  .wrapper.active {
+  .fm-folder-wrapper.active {
     --fm-folderColor: var(--fm-contrast);
     --fm-nameColor: var(--fm-contrast);
   }
 
-  .new-folder {
+  .fm-new-folder {
     border: none;
     background-color: transparent;
     font-weight: bold;
@@ -153,11 +153,11 @@
     transition: 0.3s;
   }
 
-  .new-folder:hover {
+  .fm-new-folder:hover {
     color: var(--fm-color);
   }
 
-  .folder {
+  .fm-folder {
     position: relative;
     display: flex;
     height: 36px;
@@ -172,7 +172,7 @@
     color: var(--fm-iconColor);
   }
 
-  .name {
+  .fm-folder-name {
     color: var(--fm-nameColor);
     overflow: hidden;
     margin-right: 1.5em;
@@ -182,7 +182,7 @@
     text-overflow: ellipsis;
   }
 
-  .folder :global(.folder-icon) {
+  .fm-folder :global(.folder-icon) {
     color: var(--fm-folderColor);
     width: 23px;
     height: 23px;
@@ -190,11 +190,11 @@
     transition: color 0.3s;
   }
 
-  .folder :global(.folder-loader) {
+  .fm-folder :global(.folder-loader) {
     margin: 2px 9px 2px 2px;
   }
 
-  .wrapper.active .folder::before {
+  .fm-folder-wrapper.active .fm-folder::before {
     content: "";
     position: absolute;
     top: 0;

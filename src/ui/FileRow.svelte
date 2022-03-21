@@ -5,7 +5,7 @@
       <img src={file.thumbnail} alt=""/>
     </td>
     <td class="filename">{filename}</td>
-    <td>{sizeFormatter.format(file.size / 1000)}</td>
+    <td>{file.size ? sizeFormatter.format(file.size / 1000) : null}</td>
     <td class="actions">
       <button use:tooltip={t("copy")} on:click|preventDefault|stopPropagation={actions.handleCopy}>
         <IconCopy/>

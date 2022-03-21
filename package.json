@@ -25,9 +25,12 @@
     "build": "svelte-check && tsc && vite build && STANDALONE=1 vite build && cp package.json dist/package.json && cp FileManager.d.ts dist/FileManager.d.ts && cp README.md dist/README.md",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "tsopenapi": "openapi-typescript openapi.yml --output src/types/generated-schema.ts"
+    "tsopenapi": "openapi-typescript openapi.yml --output src/types/generated-schema.ts",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed"
   },
   "devDependencies": {
+    "@playwright/test": "^1.20.0",
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
     "@tsconfig/svelte": "^2.0.1",
     "openapi-typescript": "^5.1.1",
