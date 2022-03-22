@@ -9,7 +9,5 @@ export default {
   copy: "Copier le lien",
   size: "Taille",
   filename: "Nom",
-  filesError: "Impossible de récupérer la liste des fichiers",
-  foldersError: "Impossible de récupérer la liste des dossiers",
   serverError: "Action impossible suite a une erreur serveur",
 };

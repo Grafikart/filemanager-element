@@ -1,13 +1,13 @@
 <template>
-  <div class="alert" class:danger={message.type === 'danger'} class:success={message.type === 'success'}>
+  <div class="fm-alert" class:fm-danger={message.type === 'danger'} class:fm-success={message.type === 'success'}>
     {#if message.type === 'danger'}
       <IconCircleExclamation />
     {:else if message.type === 'success'}
       <IconCircleCheck />
-      <div class="progress"></div>
+      <div class="fm-progress"></div>
     {/if}
     {message.message}
-    <button class="close" on:click|preventDefault={handleClose}>&times;</button>
+    <button class="fm-close" on:click|preventDefault={handleClose}>&times;</button>
   </div>
 </template>
 
@@ -25,7 +25,7 @@
 </script>
 
 <style>
-  .alert {
+  .fm-alert {
     background-color: #fff;
     padding:.8em 1em;
     width: 250px;
@@ -44,24 +44,25 @@
     border-radius: 3px;
     transition: 0.3s;
   }
-  .alert.danger {
+  .fm-alert.fm-danger {
     border-bottom-color: var(--fm-red);
     color: var(--fm-red-dark)
   }
-  .alert :global(svg) {
+  .fm-alert :global(svg) {
+    flex: none;
     margin-right: .5em;
   }
-  .alert.danger :global(svg) {
+  .fm-alert.fm-danger :global(svg) {
     color: var(--fm-red);
   }
-  .alert.success {
+  .fm-alert.fm-success {
     color: var(--fm-green-dark);
     border-bottom-color: var(--fm-green);
   }
-  .alert.success :global(svg) {
+  .fm-alert.fm-success :global(svg) {
     color: var(--fm-green);
   }
-  .progress {
+  .fm-progress {
     height: 3px;
     background: var(--fm-border);
     position: absolute;
@@ -70,9 +71,9 @@
     width: 100%;
     z-index: 3;
     transform-origin: 0 100%;
-    animation: alertDuration 2s linear both;
+    animation: fmAlertDuration 2s linear both;
   }
-  @keyframes alertDuration {
+  @keyframes fmAlertDuration {
     from {
       transform: scaleX(0);
     }
@@ -80,7 +81,7 @@
       transform: scaleX(1);
     }
   }
-  .close {
+  .fm-close {
     margin-right: -.5em;
     width: 2em;
     height: 100%;
@@ -95,7 +96,7 @@
     padding: 0;
     border: none;
   }
-  .close:hover {
+  .fm-close:hover {
     opacity: .5;
   }
 </style>

@@ -2,6 +2,7 @@ import { flash } from "../store";
 import { HTTPStatus } from "../types";
 import type { ApiOptions, ApiPaths, ApiResponse } from "src/types/openapi";
 import { objToQueryParams } from "./url";
+import { t } from "../lang";
 
 export function fetchApi<
   Path extends ApiPaths,
@@ -36,13 +37,15 @@ export function fetchApi<
     if (r.status >= HTTPStatus.OK && r.status < HTTPStatus.MultipleChoices) {
       return r.json() as Promise<ApiResponse<Path, typeof options.method>>;
     }
-    if (r.status === HTTPStatus.UnprocessableEntity) {
-      r.json().then((data) => {
+    r.json()
+      .then((data) => {
         if (data?.message) {
           flash(data.message, "danger");
+        } else {
+          flash(t("serverError"), "danger");
         }
-      });
-    }
+      })
+      .catch(() => flash(t("serverError"), "danger"));
     throw r;
   });
 }

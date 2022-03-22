@@ -14,12 +14,14 @@ export function useMutation<Arg extends Object, Data>(
     return cb(arg)
       .then((data) => {
         options.onSuccess?.(data);
-        store.update((v) => ({ ...v, isLoading: true }));
         return data;
       })
       .catch((reason) => {
         options.onError?.(reason);
         throw reason;
+      })
+      .finally(() => {
+        store.update((v) => ({ ...v, isLoading: false }));
       });
   };
   const store = writable({

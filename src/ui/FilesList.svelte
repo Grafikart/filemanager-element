@@ -59,12 +59,7 @@
       query: {
         folder: folder?.id ? folder.id.toString() : undefined,
       },
-    }),
-    {
-      onError () {
-        flash(t('filesError'), 'danger')
-      }
-    }
+    })
   );
 
   let files = [] as File[];

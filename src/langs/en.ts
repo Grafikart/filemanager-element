@@ -11,8 +11,6 @@ const messages: Lang = {
   copy: "Copy link",
   size: "Size",
   filename: "Name",
-  filesError: "Cannot fetch the file list",
-  foldersError: "Cannot fetch the folder list",
   serverError: "Server error",
 };
 

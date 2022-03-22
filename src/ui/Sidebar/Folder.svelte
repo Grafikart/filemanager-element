@@ -65,10 +65,7 @@
       }
     }),
     {
-      enabled: !folder.id,
-      onError () {
-        flash(t('foldersError'), 'danger')
-      }
+      enabled: !folder.id
     }
   );
 

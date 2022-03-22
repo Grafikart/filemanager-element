@@ -7,7 +7,7 @@
 
 You want a simple file browser for your website, without the hassle of a front-end framework ? Here is a simple custom element for you.
 
-First register the custom element
+First register the custom element (the lang is infered from the html "lang" attribute)
 
 ```js
 import {FileManager} from 'filemanager-element'

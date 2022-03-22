@@ -117,14 +117,6 @@ export const useCreateFolderMutation = () => {
           addToCache(null);
         }
       },
-      onError(e) {
-        if (
-          !(e instanceof Response) ||
-          e.status !== HTTPStatus.UnprocessableEntity
-        ) {
-          flash(t(`serverError`), "danger");
-        }
-      },
     }
   );
 };
