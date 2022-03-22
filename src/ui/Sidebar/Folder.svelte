@@ -36,6 +36,7 @@
   };
   const handleAddFolder = () => {
     addNewFolder = true;
+    showChildren = true;
     if (!$childrenQuery.isSuccess && folder.children === undefined) {
       $childrenQuery.refetch();
     }
