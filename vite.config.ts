@@ -8,6 +8,12 @@ export default defineConfig({
   plugins: [svelte()],
   build: {
     rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name == "style.css") return "FileManager.css";
+          return assetInfo.name;
+        },
+      },
       // Ignore node_modules dependencies
       external: standalone
         ? []

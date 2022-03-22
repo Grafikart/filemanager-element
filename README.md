@@ -11,6 +11,7 @@ First register the custom element
 
 ```js
 import {FileManager} from 'filemanager-element'
+import 'filemanager-element/FileManager.css'
 
 FileManager.register();
 ```
