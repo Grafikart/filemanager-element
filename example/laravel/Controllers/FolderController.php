@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\FolderCreateRequest;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 class FolderController extends Controller
@@ -16,13 +15,10 @@ class FolderController extends Controller
         return collect($directories)->map([$this, 'toArray']);
     }
 
-    public function store(Request $request)
+    public function store(FolderCreateRequest $request)
     {
-        $data = Validator::make($request->post(), [
-            'parent' => 'alpha_dash',
-            'name' => 'required|alpha_dash'
-        ])->validated();
-        $path = $data['parent'] . '/' . $data['name'];
+        $data = $request->validated();
+        $path = ($data['parent'] ?? '') . '/' . $data['name'];
         Storage::disk()->makeDirectory($path);
         return $this->toArray($path);
     }

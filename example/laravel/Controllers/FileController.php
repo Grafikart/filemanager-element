@@ -43,7 +43,7 @@ class FileController extends Controller
             'id' => $file,
             'name' => $info['basename'],
             'url' => $disk->url($file),
-            // 'size' => $disk->size($file),
+            'size' => $disk->size($file),
             'folder' => $info['dirname'] === '.' ? null : $info['dirname'],
             'thumbnail' => $disk->url($file),
         ];
