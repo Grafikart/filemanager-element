@@ -1,12 +1,14 @@
 <template>
-  <div class="container" on:click={actions.handleClick} bind:this={el}>
-    <div class="thumbnail">
+  <div class="fm-file" on:click={actions.handleClick} bind:this={el}>
+    <div class="fm-thumbnail">
       <img src={file.thumbnail} alt=""/>
-      <button use:tooltip={t("delete")}  on:click|preventDefault|stopPropagation={actions.handleDelete}>
+      <button use:tooltip={t("delete")}
+              class="fm-delete"
+              on:click|preventDefault|stopPropagation={actions.handleDelete}>
         <IconDelete/>
       </button>
     </div>
-    <div class="filename">{filename}</div>
+    <div class="fm-filename">{filename}</div>
   </div>
 </template>
 
@@ -25,7 +27,7 @@
 </script>
 
 <style>
-  .thumbnail {
+  .fm-thumbnail {
     background-color: var(--fm-backgroundDarken);
     width: 105px;
     height: 105px;
@@ -40,7 +42,7 @@
     transition: background-color .3s;
     position: relative;
   }
-  .thumbnail img {
+  .fm-thumbnail img {
     --fm-size: 7px;
     max-width: 100%;
     max-height: 100%;
@@ -51,10 +53,10 @@
     background-size: calc(var(--fm-size) * 2) calc(var(--fm-size) * 2);
     background-position: 0 0, 0 var(--fm-size), var(--fm-size) calc(var(--fm-size) * -1), calc(var(--fm-size) * -1) 0px;
   }
-  .container:hover .thumbnail {
+  .fm-file:hover .fm-thumbnail {
     background: var(--fm-border);
   }
-  .filename {
+  .fm-filename {
     margin-top: .5em;
     text-align: center;
     font-size: .9em;
@@ -64,10 +66,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .container:hover button {
+  .fm-file:hover button {
     opacity: 1;
   }
-  button {
+  .fm-delete {
     opacity: 0;
     position: absolute;
     top: -3px;
@@ -81,7 +83,7 @@
     margin: 0;
     transition: color .3s, opacity .3s;
   }
-  button:hover {
+  .fm-delete:hover {
     color: var(--fm-color);
   }
 </style>

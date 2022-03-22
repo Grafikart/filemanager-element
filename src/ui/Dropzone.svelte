@@ -16,25 +16,25 @@
 
 <template>
   <main
-    class="main"
+    class="fm-main"
     use:dragOver
     on:dropzoneover={handleDragOver}
     on:dropzoneleave={handleDragLeave}
     on:drop={handleDrop}
   >
     <slot />
-    <span class="dropzone" class:active={over}>
+    <span class="fm-dropzone" class:active={over}>
       <IconUpload animated={over} />
     </span>
   </main>
 </template>
 
 <style>
-  .main {
+  .fm-main {
     position: relative;
     overflow: auto;
   }
-  .dropzone {
+  .fm-dropzone {
     pointer-events: none;
     position: absolute;
     display: flex;
@@ -51,8 +51,8 @@
   .active {
     opacity: 1;
   }
-  .dropzone::after,
-  .dropzone::before {
+  .fm-dropzone::after,
+  .fm-dropzone::before {
     content: "";
     position: absolute;
     top: 0;
@@ -60,16 +60,16 @@
     right: 0;
     bottom: 0;
   }
-  .dropzone::before {
+  .fm-dropzone::before {
     background-color: var(--fm-contrast);
     opacity: 0.6;
   }
-  .dropzone::after {
+  .fm-dropzone::after {
     margin: 10px;
     border-radius: 4px;
     border: dashed 2px var(--fm-contrast);
   }
-  .dropzone :global(svg) {
+  .fm-dropzone :global(svg) {
     position: relative;
     z-index: 1;
     width: 100px;

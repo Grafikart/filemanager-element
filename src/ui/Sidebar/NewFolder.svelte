@@ -29,7 +29,7 @@
   <form
     action=""
     on:submit|preventDefault={handleSubmit}
-    class="wrapper"
+    class="fm-folder-form"
     use:clickOutside
     on:outclick={handleCancel}
   >
@@ -53,7 +53,7 @@
 </template>
 
 <style>
-  .wrapper {
+  .fm-folder-form {
     margin-left: 25px;
     color: var(--fm-iconColor);
     height: 36px;
@@ -61,10 +61,10 @@
     align-items: center;
     padding-left: 8px;
   }
-  .wrapper :global(svg) {
+  .fm-folder-form :global(svg) {
     flex: none;
   }
-  .wrapper input {
+  .fm-folder-form input {
     border: none;
     height: 24px;
     border-bottom: 1px solid var(--fm-iconColor);
@@ -74,14 +74,14 @@
     font-family: inherit;
     font-size: inherit;
   }
-  .wrapper input:focus {
+  .fm-folder-form input:focus {
     border-color: var(--fm-contrast);
   }
-  .wrapper :global(button) {
+  .fm-folder-form :global(button) {
     color: var(--fm-color);
     transition: color 0.3s;
   }
-  .wrapper :global(button):hover {
+  .fm-folder-form :global(button):hover {
     color: var(--fm-contrast);
   }
 </style>

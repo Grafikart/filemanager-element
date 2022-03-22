@@ -85,10 +85,6 @@ paths:
           name: folder
           schema:
             type: string
-        - in: query
-          name: search
-          schema:
-            type: string
       responses:
         "200":
           description: The list of files
