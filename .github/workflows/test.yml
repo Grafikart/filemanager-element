@@ -27,6 +27,8 @@ jobs:
         with:
           version: 6.22.2
           run_install: true
+      - name: Install Playwright
+        run: pnpx playwright install --with-deps
       - name: test
         run: pnpm run test
         env:
