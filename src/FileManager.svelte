@@ -102,7 +102,7 @@
     pointer-events: none;
     z-index: 9999;
     visibility: visible;
-    position: absolute;
+    position: fixed;
     padding: 5px 9px;
     inset: 0 auto auto 0;
     margin: 0px;
@@ -118,7 +118,7 @@
 
   .fm-root :global(.fm-tooltip::after) {
     content: "";
-    position: absolute;
+    position: fixed;
     border-color: transparent;
     border-style: solid;
     bottom: -7px;
