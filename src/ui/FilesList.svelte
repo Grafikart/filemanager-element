@@ -46,7 +46,7 @@
   import { t } from '../lang'
 
   export let layout: 'grid' | 'rows'
-  export let folder: Folder | null;
+  export let folder: Folder;
   const deleteFolder = useDeleteFolderMutation();
   const handleDelete = () => {
     if (folder) {
@@ -55,11 +55,7 @@
   };
 
   const filesQuery = useQuery(filesQueryKey(folder?.id), () =>
-    fetchApi(config.endpoint, "/files", {
-      query: {
-        folder: folder?.id ? folder.id.toString() : undefined,
-      },
-    })
+    config.getFiles(folder)
   );
 
   let files = [] as File[];

@@ -16,7 +16,7 @@
     const name = new FormData(e.currentTarget as HTMLFormElement)
       .get("name")!
       .toString();
-    await $createFolderMutation.mutateAsync({ name, parent });
+    await $createFolderMutation.mutateAsync({ name, parent: parent.id });
     dispatch("submit");
   };
   const handleCancel = () => {

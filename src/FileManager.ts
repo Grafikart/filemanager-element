@@ -1,7 +1,6 @@
 import FileManagerComponent from "./FileManager.svelte";
 import config from "./config";
 import { setLang } from "./lang";
-import { QueryClient } from "./query";
 
 export class FileManager extends HTMLElement {
   private fm: FileManagerComponent | null = null;
@@ -13,7 +12,11 @@ export class FileManager extends HTMLElement {
 
   connectedCallback() {
     this.style.setProperty("display", "block");
-    config.endpoint = this.getAttribute("endpoint")!;
+    const endpointAttr = this.getAttribute("endpoint");
+    if (endpointAttr) {
+      config.endpoint = endpointAttr!;
+    }
+
     if (!config.endpoint) {
       throw new Error("You must define an endpoint for this custom element");
     }
@@ -41,7 +44,8 @@ export class FileManager extends HTMLElement {
     this?.fm?.$destroy();
   }
 
-  static register(name = "file-manager") {
+  static register(name = "file-manager", options?: Partial<typeof config>) {
+    Object.assign(config, options);
     if (this.registered === false) {
       customElements.define(name, FileManager);
       this.registered = true;

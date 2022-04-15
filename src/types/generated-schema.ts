@@ -37,7 +37,7 @@ export interface paths {
         content: {
           "application/json": {
             name: string;
-            parent: string | number;
+            parent?: string | number | null;
           };
         };
       };

@@ -1,7 +1,6 @@
 import { FileManager } from "./FileManager";
 
 FileManager.register();
-FileManager.register();
 
 document.querySelector("file-manager")!.addEventListener("close", () => {
   console.log("close");

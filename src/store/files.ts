@@ -1,11 +1,10 @@
-import { writable } from "svelte/store";
-import type { File, Folder } from "../types";
-import { QueryClient, useMutation, useQueryClient } from "../query";
-import { fetchApi } from "../functions/api";
-import config from "../config";
-import { HTTPStatus } from "../types";
-import { t } from "../lang";
-import { flash } from "./flash";
+import { writable } from 'svelte/store';
+import type { File, Folder } from '../types';
+import { HTTPStatus } from '../types';
+import { QueryClient, useMutation, useQueryClient } from '../query';
+import config from '../config';
+import { t } from '../lang';
+import { flash } from './flash';
 
 export const rootFolder = {
   id: null,
@@ -41,12 +40,7 @@ export const removeFile = async (queryClient: QueryClient, file: File) => {
     );
   }
   try {
-    await fetchApi(config.endpoint, `/files/{id}`, {
-      method: "delete",
-      params: {
-        id: file.id.toString(),
-      },
-    });
+    await config.deleteFile(file);
   } catch (e) {
     if (
       !(e instanceof Response) ||
@@ -60,23 +54,15 @@ export const removeFile = async (queryClient: QueryClient, file: File) => {
 export const uploadFile = async (
   queryClient: QueryClient,
   file: any,
-  folder: Folder | null
+  folder: Folder
 ) => {
-  const form = new FormData();
-  form.set("file", file);
-  if (folder?.id) {
-    form.set("folder", folder.id.toString());
-  }
   try {
-    const data = await fetchApi(config.endpoint, "/files", {
-      method: "post",
-      body: form,
-    });
+    const newFile = await config.uploadFile(file, folder)
     const queryKey = filesQueryKey(folder?.id);
     const state = queryClient.getQueryState(queryKey);
     if (state?.data) {
       queryClient.setQueryData<File[]>(queryKey, (files) =>
-        files ? [data, ...files] : data
+        files ? [newFile, ...files] : [newFile]
       );
     }
   } catch (e) {
@@ -92,14 +78,7 @@ export const uploadFile = async (
 export const useCreateFolderMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
-    ({ name, parent }: { name: string; parent: Folder }) =>
-      fetchApi(config.endpoint, "/folders", {
-        method: "post",
-        json: {
-          parent: parent.id!,
-          name: name,
-        },
-      }),
+    config.createFolder,
     {
       onSuccess(folder: Folder) {
         // Add the new folder into a specific cache
@@ -125,12 +104,7 @@ export const useDeleteFolderMutation = () => {
   const queryClient = useQueryClient();
   return useMutation(
     (folder: Folder) =>
-      fetchApi(config.endpoint, "/folders/{id}", {
-        method: "delete",
-        params: {
-          id: folder.id!.toString(),
-        },
-      }).then((r) => folder),
+      config.deleteFolder(folder).then((r) => folder),
     {
       onSuccess: (folder: Folder) => {
         // If we are deleting the current directory, back to the parent

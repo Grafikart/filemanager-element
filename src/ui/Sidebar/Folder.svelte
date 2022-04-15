@@ -1,17 +1,11 @@
 <script lang="ts">
   import type { Folder } from '../../types';
   import { useQuery, useQueryClient } from '../../query';
-  import { fetchApi } from '../../functions/api';
   import config from '../../config';
   import IconLoader from '../icons/IconLoader.svelte';
   import IconFolder from '../icons/IconFolder.svelte';
   import Folders from './Folders.svelte';
-  import {
-    flash,
-    folder as currentFolder,
-    foldersQueryKey,
-    uploadFile
-  } from '../../store';
+  import { folder as currentFolder, foldersQueryKey, uploadFile } from '../../store';
   import { dragOver } from '../../actions/dragOver';
   import IconCirclePlus from '../icons/IconCirclePlus.svelte';
   import NewFolder from './NewFolder.svelte';
@@ -60,11 +54,7 @@
 
   const childrenQuery = useQuery(
     foldersQueryKey(folder.id),
-    () => fetchApi(config.endpoint, '/folders', {
-      query: {
-        parent: folder?.id?.toString()
-      }
-    }),
+    () => config.getFolders(folder),
     {
       enabled: !folder.id
     }
