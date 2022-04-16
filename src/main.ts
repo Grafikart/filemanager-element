@@ -61,6 +61,8 @@ document.querySelector("#function")!.addEventListener("click", () => {
 
 if (window.location.hash === "#function") {
   fnBasedManager.removeAttribute("hidden");
+} else if (window.location.hash === "#readonly") {
+  document.querySelector("[readonly]")!.removeAttribute("hidden");
 } else {
   apiBasedManager.removeAttribute("hidden");
 }

@@ -13,7 +13,7 @@
     <div class="empty">
       <p class="big">{t('emptyTitle')}</p>
       <p>{t('emptyDescription')}</p>
-      {#if isEmpty}
+      {#if isEmpty && !options.readOnly}
         <button
                 class="delete-folder"
                 disabled={$deleteFolder.isLoading}
@@ -40,6 +40,7 @@
 
   export let layout: 'grid' | 'rows'
   export let folder: Folder | null;
+  const options = getOptions()
   const deleteFolder = useDeleteFolderMutation();
   const handleDelete = () => {
     if (folder) {

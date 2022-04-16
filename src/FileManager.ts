@@ -22,6 +22,7 @@ export class FileManager {
     if (endpointAttr) {
       this.options.endpoint = endpointAttr!;
     }
+    this.options.readOnly = this.element.hasAttribute("readonly");
 
     if (!this.options.endpoint && !this.options.getFiles) {
       throw new Error("You must define an endpoint for this custom element");

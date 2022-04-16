@@ -10,9 +10,11 @@
       <button use:tooltip={t("copy")} on:click|preventDefault|stopPropagation={actions.handleCopy}>
         <IconCopy/>
       </button>
+      {#if !options.readOnly}
       <button use:tooltip={t("delete")} on:click|preventDefault|stopPropagation={actions.handleDelete}>
         <IconDelete/>
       </button>
+      {/if}
     </td>
   </tr>
 </template>
@@ -25,8 +27,10 @@
   import { useFileActions } from '../hooks/useFileActions'
   import { shorten } from '../functions/string'
   import { t } from '../lang'
+  import { getOptions } from '../store'
 
   let row: HTMLTableRowElement
+  const options = getOptions()
   const sizeFormatter = new Intl.NumberFormat(undefined, {
     style: 'unit',
     unit: 'kilobyte',

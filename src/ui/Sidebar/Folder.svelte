@@ -21,9 +21,16 @@
   let showChildren = !folder?.id
 
   const options = getOptions()
-  const handleDragOver = () => (over = true);
-  const handleDragLeave = () => (over = false);
+  const handleDragOver = () => {
+    if (!options.readOnly) { over = true }
+  };
+  const handleDragLeave = () => {
+    if (!options.readOnly) { over = false }
+  };
   const handleDrop = (e: DragEvent) => {
+    if (options.readOnly) {
+      e.preventDefault()
+    }
     Array.from(e.dataTransfer!.files).forEach((file) =>
       uploadFile(options, queryClient, file, folder)
     );
@@ -91,9 +98,11 @@
           {folder?.name ?? '/'}
         </span>
       </span>
+      {#if !options.readOnly}
       <button class="fm-new-folder" on:click|preventDefault={handleAddFolder} use:tooltip={t('createFolder')}>
         <IconCirclePlus size={16}/>
       </button>
+      {/if}
     </span>
     {#if addNewFolder}
       <NewFolder

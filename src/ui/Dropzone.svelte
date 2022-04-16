@@ -16,18 +16,24 @@
 </script>
 
 <template>
-  <main
-    class="fm-main"
-    use:dragOver
-    on:dropzoneover={handleDragOver}
-    on:dropzoneleave={handleDragLeave}
-    on:drop={handleDrop}
-  >
-    <slot />
-    <span class="fm-dropzone" class:active={over}>
+  {#if options.readOnly}
+    <main class="fm-main">
+      <slot/>
+    </main>
+  {:else}
+    <main
+            class="fm-main"
+            use:dragOver
+            on:dropzoneover={handleDragOver}
+            on:dropzoneleave={handleDragLeave}
+            on:drop={handleDrop}
+    >
+      <slot />
+      <span class="fm-dropzone" class:active={over}>
       <IconUpload animated={over} />
     </span>
-  </main>
+    </main>
+  {/if}
 </template>
 
 <style>
