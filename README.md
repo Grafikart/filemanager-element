@@ -61,16 +61,17 @@ filemanager.addEventListener("selectfile", e => {
 
 Options can be set on the `register()` method as a second argument. All the options are optional
 
-| Name           | Type     | Description                            |
-|----------------|----------|----------------------------------------|
-| readOnly       | bool     | Do not allow file deletion or creation |
-| endpoint       | string   | Endpoint for the REST API              |
-| getFiles()     | function | Custom API to retrieve files           |
-| getFolders()   | function | Custom API to retrieve folders         |
-| deleteFile()   | function | Custom API to delete file              |
-| deleteFolder() | function | Custom API to delete folder            |
-| uploadFile()   | function | Custom API to upload file              |
-| createFolder() | function | Custom API to create folder            |
+| Name            | Type     | Description                                |
+|-----------------|----------|--------------------------------------------|
+| readOnly        | bool     | Do not allow file deletion or creation     |
+| endpoint        | string   | Endpoint for the REST API                  |
+| httpHeaders     | object   | Additional headers to send to the endpoint |
+| getFiles()      | function | Custom API to retrieve files               |
+| getFolders()    | function | Custom API to retrieve folders             |
+| deleteFile()    | function | Custom API to delete file                  |
+| deleteFolder()  | function | Custom API to delete folder                |
+| uploadFile()    | function | Custom API to upload file                  |
+| createFolder()  | function | Custom API to create folder                |
 
 ## Custom API
 
