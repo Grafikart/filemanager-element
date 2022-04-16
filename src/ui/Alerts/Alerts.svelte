@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="fm-wrapper">
     {#each $flashMessages as message}
       <div  transition:fly={{x: 20}}>
         <Alert message={message}/>
@@ -15,7 +15,7 @@
 </script>
 
 <style>
-  .wrapper {
+  .fm-wrapper {
     position: absolute;
     top: .5em;
     right: .5em;
