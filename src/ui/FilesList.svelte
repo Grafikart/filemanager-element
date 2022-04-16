@@ -13,7 +13,7 @@
     <div class="empty">
       <p class="big">{t('emptyTitle')}</p>
       <p>{t('emptyDescription')}</p>
-      {#if isEmpty}
+      {#if isEmpty && !options.readOnly}
         <button
                 class="delete-folder"
                 disabled={$deleteFolder.isLoading}
@@ -30,23 +30,17 @@
 </template>
 
 <script lang="ts">
-  import {
-    useDeleteFolderMutation,
-    filesQueryKey,
-    foldersQueryKey,
-    searchQuery, flash
-  } from '../store';
-  import { useQuery } from "../query";
-  import config from "../config";
-  import { fetchApi } from "../functions/api";
-  import IconLoader from "./icons/IconLoader.svelte";
-  import type { File, Folder } from "../types";
+  import { filesQueryKey, foldersQueryKey, getOptions, searchQuery, useDeleteFolderMutation } from '../store';
+  import { useQuery } from '../query';
+  import IconLoader from './icons/IconLoader.svelte';
+  import type { File, Folder } from '../types';
   import FilesListRows from './FilesListRows.svelte'
   import FilesListGrid from './FilesListGrid.svelte'
   import { t } from '../lang'
 
   export let layout: 'grid' | 'rows'
   export let folder: Folder | null;
+  const options = getOptions()
   const deleteFolder = useDeleteFolderMutation();
   const handleDelete = () => {
     if (folder) {
@@ -55,30 +49,26 @@
   };
 
   const filesQuery = useQuery(filesQueryKey(folder?.id), () =>
-    fetchApi(config.endpoint, "/files", {
-      query: {
-        folder: folder?.id ? folder.id.toString() : undefined,
-      },
-    })
+    getOptions().getFiles(folder)
   );
 
   let files = [] as File[];
   $: {
     files = $filesQuery.isSuccess
-      ? $filesQuery.data.filter((f: File) =>
-          $searchQuery ? f.name.includes($searchQuery) : true
-        )
+      ? $filesQuery.data!.filter((f: File) =>
+        $searchQuery ? f.name.includes($searchQuery) : true
+      )
       : [];
   }
 
   // Fake query to retrieve folder informations
   const folders = useQuery(foldersQueryKey(folder?.id), () => [] as Folder[], {
-    enabled: false,
+    enabled: false
   });
   $: isEmpty =
     folder?.id &&
     (folder?.children && folder.children.length === 0 || $folders.isSuccess &&
-    $folders?.data?.length === 0) &&
+      $folders?.data?.length === 0) &&
     $filesQuery.isSuccess &&
     $filesQuery?.data?.length === 0;
 </script>

@@ -2,11 +2,13 @@
   <div class="fm-file" on:click={actions.handleClick} bind:this={el}>
     <div class="fm-thumbnail">
       <img src={file.thumbnail} alt=""/>
+      {#if !options.readOnly}
       <button use:tooltip={t("delete")}
               class="fm-delete"
               on:click|preventDefault|stopPropagation={actions.handleDelete}>
         <IconDelete/>
       </button>
+      {/if}
     </div>
     <div class="fm-filename">{filename}</div>
   </div>
@@ -19,8 +21,10 @@
   import IconDelete from './icons/IconDelete.svelte'
   import { tooltip } from '../actions/tooltip'
   import { t } from '../lang'
+  import { getOptions } from '../store'
 
   let el: HTMLDivElement
+  const options = getOptions()
   export let file: File
   $: filename = shorten(file.name, 30)
   $: actions = useFileActions(file, el)

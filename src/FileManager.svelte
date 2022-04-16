@@ -27,10 +27,15 @@
   import FilesList from './ui/FilesList.svelte'
   import Alerts from './ui/Alerts/Alerts.svelte'
   import { folder } from './store'
+  import type { Options } from './types'
+  import { setContext } from 'svelte'
 
   export let hidden: boolean
   export let layout: 'grid' | 'rows'
   export let lazyFolders: boolean
+  export let options: Options
+
+  setContext('options', options)
 
   const queryClient = new QueryClient()
 </script>

@@ -10,13 +10,13 @@
   import IconLoader from "../icons/IconLoader.svelte";
   import { t } from '../../lang'
 
-  export let parent: Folder;
+  export let parent: Folder | null;
   const createFolderMutation = useCreateFolderMutation();
   const handleSubmit = async (e: SubmitEvent) => {
     const name = new FormData(e.currentTarget as HTMLFormElement)
       .get("name")!
       .toString();
-    await $createFolderMutation.mutateAsync({ name, parent });
+    await $createFolderMutation.mutateAsync({ name, parent: parent?.id });
     dispatch("submit");
   };
   const handleCancel = () => {

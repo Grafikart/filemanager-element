@@ -1,30 +1,23 @@
 import { writable } from "svelte/store";
-import type { File, Folder } from "../types";
-import { QueryClient, useMutation, useQueryClient } from "../query";
-import { fetchApi } from "../functions/api";
-import config from "../config";
+import type { File, Folder, NullableId, Options } from "../types";
 import { HTTPStatus } from "../types";
+import { QueryClient, useMutation, useQueryClient } from "../query";
 import { t } from "../lang";
 import { flash } from "./flash";
-
-export const rootFolder = {
-  id: null,
-  name: "/",
-  parent: null,
-};
+import { getOptions } from "./index";
 
 /**
  * Helpers
  */
-export const filesQueryKey = (folderId?: Folder["id"] | null) =>
-  `files/${folderId || ""}`;
-export const foldersQueryKey = (parentId?: Folder["id"] | null) =>
-  `folders/${parentId || ""}`;
+export const filesQueryKey = (folderId?: NullableId) =>
+  `files/${folderId ?? ""}`;
+export const foldersQueryKey = (parentId?: NullableId) =>
+  `folders/${parentId ?? ""}`;
 
 /**
  * Store
  */
-const folderStore = writable<Folder>(rootFolder);
+const folderStore = writable<Folder | null>(null);
 
 export const folder = folderStore;
 export const searchQuery = writable("");
@@ -32,7 +25,11 @@ export const searchQuery = writable("");
 /*
  * Methods
  */
-export const removeFile = async (queryClient: QueryClient, file: File) => {
+export const removeFile = async (
+  options: Options,
+  queryClient: QueryClient,
+  file: File
+) => {
   const queryKey = filesQueryKey(file.folder);
   const oldData = queryClient.getQueryData(queryKey);
   if (oldData) {
@@ -41,42 +38,31 @@ export const removeFile = async (queryClient: QueryClient, file: File) => {
     );
   }
   try {
-    await fetchApi(config.endpoint, `/files/{id}`, {
-      method: "delete",
-      params: {
-        id: file.id.toString(),
-      },
-    });
+    await options.deleteFile(file);
   } catch (e) {
     if (
       !(e instanceof Response) ||
       e.status !== HTTPStatus.UnprocessableEntity
     ) {
       flash(t(`serverError`), "danger");
+      console.error(e);
     }
     queryClient.setQueryData(queryKey, oldData);
   }
 };
 export const uploadFile = async (
+  options: Options,
   queryClient: QueryClient,
   file: any,
-  folder: Folder | null
+  folder?: Folder | null
 ) => {
-  const form = new FormData();
-  form.set("file", file);
-  if (folder?.id) {
-    form.set("folder", folder.id.toString());
-  }
   try {
-    const data = await fetchApi(config.endpoint, "/files", {
-      method: "post",
-      body: form,
-    });
+    const newFile = await options.uploadFile(file, folder);
     const queryKey = filesQueryKey(folder?.id);
     const state = queryClient.getQueryState(queryKey);
     if (state?.data) {
       queryClient.setQueryData<File[]>(queryKey, (files) =>
-        files ? [data, ...files] : data
+        files ? [newFile, ...files] : [newFile]
       );
     }
   } catch (e) {
@@ -85,21 +71,16 @@ export const uploadFile = async (
       e.status !== HTTPStatus.UnprocessableEntity
     ) {
       flash(t(`serverError`), "danger");
+      console.error(e);
     }
   }
 };
 
 export const useCreateFolderMutation = () => {
   const queryClient = useQueryClient();
+  const options = getOptions();
   return useMutation(
-    ({ name, parent }: { name: string; parent: Folder }) =>
-      fetchApi(config.endpoint, "/folders", {
-        method: "post",
-        json: {
-          parent: parent.id!,
-          name: name,
-        },
-      }),
+    (params: Pick<Folder, "name" | "parent">) => options.createFolder(params),
     {
       onSuccess(folder: Folder) {
         // Add the new folder into a specific cache
@@ -123,20 +104,15 @@ export const useCreateFolderMutation = () => {
 
 export const useDeleteFolderMutation = () => {
   const queryClient = useQueryClient();
+  const options = getOptions();
   return useMutation(
-    (folder: Folder) =>
-      fetchApi(config.endpoint, "/folders/{id}", {
-        method: "delete",
-        params: {
-          id: folder.id!.toString(),
-        },
-      }).then((r) => folder),
+    (folder: Folder) => options.deleteFolder(folder).then((r) => folder),
     {
       onSuccess: (folder: Folder) => {
         // If we are deleting the current directory, back to the parent
-        folderStore.update((f: Folder | null) => rootFolder);
+        folderStore.update(() => null);
         // Update the store (both the root and this depth
-        const updateData = (parent: Folder["id"]) => {
+        const updateData = (parent?: Folder["id"] | null) => {
           const queryKey = foldersQueryKey(parent);
           const state = queryClient.getQueryState(queryKey);
           if (state?.data) {
@@ -148,7 +124,7 @@ export const useDeleteFolderMutation = () => {
           }
         };
         updateData(folder.parent);
-        updateData(null);
+        updateData();
       },
     }
   );

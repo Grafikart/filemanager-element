@@ -37,7 +37,7 @@ export interface paths {
         content: {
           "application/json": {
             name: string;
-            parent: string | number;
+            parent?: (string | null) | (number | null);
           };
         };
       };
@@ -67,7 +67,6 @@ export interface paths {
       parameters: {
         query: {
           folder?: string;
-          search?: string;
         };
       };
       responses: {
@@ -126,8 +125,7 @@ export interface components {
       id: components["schemas"]["ID"];
       /** @description FolderResource name */
       name: string;
-      /** @description Parent folder */
-      parent: (string | number) | null;
+      parent?: components["schemas"]["NullableID"];
     };
     File: {
       id: components["schemas"]["ID"];
@@ -137,10 +135,11 @@ export interface components {
       url: string;
       /** @description File size */
       size?: number;
-      folder: components["schemas"]["ID"];
+      folder?: components["schemas"]["NullableID"];
       thumbnail: string;
     };
     ID: string | number;
+    NullableID: (string | null) | (number | null);
   };
   responses: {
     /** Bad request */

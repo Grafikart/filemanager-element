@@ -1,12 +1,11 @@
 import type { components } from "./generated-schema";
 import type FR from "../langs/fr";
+import type config from "../config";
 
-export type Folder = {
-  children?: components["schemas"]["Folder"][];
-  id: components["schemas"]["ID"] | null;
-  name: string;
-  parent: components["schemas"]["ID"] | null;
+export type Folder = components["schemas"]["Folder"] & {
+  children?: Folder[];
 };
+export type NullableId = components["schemas"]["NullableID"];
 export type Lang = typeof FR;
 export type File = components["schemas"]["File"];
 export type FlashMessage = {
@@ -14,8 +13,6 @@ export type FlashMessage = {
   message: string;
   id: number;
 };
-export type ID = string | number;
-export type Props = { [key: string]: any };
 
 export enum HTTPStatus {
   OK = 200,
@@ -28,16 +25,4 @@ export enum HTTPStatus {
   BadRequest = 400,
 }
 
-/**
- * Utility types
- */
-export type TupleToUnion<T extends any[]> = T[number];
-export type ShiftFunctionParameter<T> = T extends (
-  args: any,
-  ...args2: infer P
-) => infer R
-  ? (...args: P) => R
-  : never;
-export type ShiftAllFunctionsParameter<T extends object> = {
-  [key in keyof T]: ShiftFunctionParameter<T[key]>;
-};
+export type Options = typeof config;

@@ -2,31 +2,38 @@
   import IconUpload from "./icons/IconUpload.svelte";
   import { dragOver } from "../actions/dragOver";
   import { useQueryClient } from "../query";
-  import { uploadFile, folder } from "../store";
+  import { uploadFile, folder, getOptions } from '../store';
   let over = false;
   const handleDragOver = () => (over = true);
   const handleDragLeave = () => (over = false);
   const queryClient = useQueryClient();
+  const options = getOptions()
   const handleDrop = (e: DragEvent) => {
     Array.from(e.dataTransfer!.files).forEach((file) =>
-      uploadFile(queryClient, file, $folder)
+      uploadFile(options, queryClient, file, $folder)
     );
   };
 </script>
 
 <template>
-  <main
-    class="fm-main"
-    use:dragOver
-    on:dropzoneover={handleDragOver}
-    on:dropzoneleave={handleDragLeave}
-    on:drop={handleDrop}
-  >
-    <slot />
-    <span class="fm-dropzone" class:active={over}>
+  {#if options.readOnly}
+    <main class="fm-main">
+      <slot/>
+    </main>
+  {:else}
+    <main
+            class="fm-main"
+            use:dragOver
+            on:dropzoneover={handleDragOver}
+            on:dropzoneleave={handleDragLeave}
+            on:drop={handleDrop}
+    >
+      <slot />
+      <span class="fm-dropzone" class:active={over}>
       <IconUpload animated={over} />
     </span>
-  </main>
+    </main>
+  {/if}
 </template>
 
 <style>

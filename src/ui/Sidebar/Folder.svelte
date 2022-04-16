@@ -1,17 +1,10 @@
 <script lang="ts">
   import type { Folder } from '../../types';
   import { useQuery, useQueryClient } from '../../query';
-  import { fetchApi } from '../../functions/api';
-  import config from '../../config';
   import IconLoader from '../icons/IconLoader.svelte';
   import IconFolder from '../icons/IconFolder.svelte';
   import Folders from './Folders.svelte';
-  import {
-    flash,
-    folder as currentFolder,
-    foldersQueryKey,
-    uploadFile
-  } from '../../store';
+  import { folder as currentFolder, foldersQueryKey, getOptions, uploadFile } from '../../store';
   import { dragOver } from '../../actions/dragOver';
   import IconCirclePlus from '../icons/IconCirclePlus.svelte';
   import NewFolder from './NewFolder.svelte';
@@ -20,24 +13,32 @@
   import { tooltip } from '../../actions/tooltip'
 
   const queryClient = useQueryClient();
-  export let folder: Folder;
+  export let folder: Folder | null;
   export let lazyLoad: boolean;
 
   let over = false;
   let addNewFolder = false;
-  let showChildren = !folder.id
+  let showChildren = !folder?.id
 
-  const handleDragOver = () => (over = true);
-  const handleDragLeave = () => (over = false);
+  const options = getOptions()
+  const handleDragOver = () => {
+    if (!options.readOnly) { over = true }
+  };
+  const handleDragLeave = () => {
+    if (!options.readOnly) { over = false }
+  };
   const handleDrop = (e: DragEvent) => {
+    if (options.readOnly) {
+      e.preventDefault()
+    }
     Array.from(e.dataTransfer!.files).forEach((file) =>
-      uploadFile(queryClient, file, folder)
+      uploadFile(options, queryClient, file, folder)
     );
   };
   const handleAddFolder = () => {
     addNewFolder = true;
     showChildren = true;
-    if (!$childrenQuery.isSuccess && folder.children === undefined) {
+    if (!$childrenQuery.isSuccess && folder?.children === undefined) {
       $childrenQuery.refetch();
     }
   };
@@ -53,27 +54,23 @@
     showChildren = true
     $currentFolder = folder;
     // Do not prefetch if we already have children loaded
-    if (folder.children === undefined) {
+    if (folder?.children === undefined) {
       $childrenQuery.refetch();
     }
   };
 
   const childrenQuery = useQuery(
-    foldersQueryKey(folder.id),
-    () => fetchApi(config.endpoint, '/folders', {
-      query: {
-        parent: folder?.id?.toString()
-      }
-    }),
+    foldersQueryKey(folder?.id),
+    () => options.getFolders(folder?.id ? folder : undefined),
     {
-      enabled: !folder.id
+      enabled: !folder?.id
     }
   );
 
   let children: Folder[] | null = null
   $: {
     if ($childrenQuery.isSuccess) {
-      children = (lazyLoad ? $childrenQuery.data : nestFolder($childrenQuery.data)).filter((f: Folder) => f.parent === folder.id);
+      children = (lazyLoad ? $childrenQuery.data! : nestFolder($childrenQuery.data!)).filter((f: Folder) => (f.parent ?? null) === (folder?.id ?? null));
     }
   }
 </script>
@@ -82,7 +79,7 @@
   <li>
     <span
             class="fm-folder-wrapper"
-            class:active={folder.id === $currentFolder?.id || over}
+            class:active={folder?.id === $currentFolder?.id || over}
     >
       <span
               class="fm-folder"
@@ -98,12 +95,14 @@
           <IconFolder class="folder-icon"/>
         {/if}
         <span class="fm-folder-name">
-          {folder.name}
+          {folder?.name ?? '/'}
         </span>
       </span>
+      {#if !options.readOnly}
       <button class="fm-new-folder" on:click|preventDefault={handleAddFolder} use:tooltip={t('createFolder')}>
         <IconCirclePlus size={16}/>
       </button>
+      {/if}
     </span>
     {#if addNewFolder}
       <NewFolder
@@ -112,8 +111,8 @@
               on:cancel={exitAddFolder}
       />
     {/if}
-    {#if folder.children && showChildren}
-      <Folders folders={folder.children} lazyLoad={lazyLoad}/>
+    {#if folder?.children && showChildren}
+      <Folders folders={folder?.children} lazyLoad={lazyLoad}/>
     {:else if children && showChildren}
       <Folders folders={children} lazyLoad={lazyLoad}/>
     {/if}

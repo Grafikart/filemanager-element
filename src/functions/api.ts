@@ -12,7 +12,7 @@ export function fetchApi<
   let url = new URL(
     (baseUrl.startsWith("/") ? window.location.origin : "") + baseUrl
   );
-  url.pathname = url.pathname + path;
+  url.pathname = (url.pathname === '/' ? '' : url.pathname) + path;
   o.credentials = "include";
   o.headers = { ...o.headers };
   o.headers["Accept"] = "application/json";
