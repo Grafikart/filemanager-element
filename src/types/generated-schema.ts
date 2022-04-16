@@ -137,7 +137,7 @@ export interface components {
       url: string;
       /** @description File size */
       size?: number;
-      folder: components["schemas"]["ID"];
+      folder: components["schemas"]["ID"] | null;
       thumbnail: string;
     };
     ID: string | number;

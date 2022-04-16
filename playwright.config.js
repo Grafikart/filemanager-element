@@ -12,7 +12,7 @@ const config = {
   reporter: process.env.CI ? "github" : "list",
   use: {
     actionTimeout: 0,
-    trace: "on-first-retry",
+    trace: process.env.CI ? "off" : "retain-on-failure",
   },
   webServer: {
     command: "npm run dev",
