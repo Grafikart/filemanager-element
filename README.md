@@ -43,27 +43,32 @@ filemanager.addEventListener("selectfile", e => {
 | Attribute    | Description                                                 | Default |
 |--------------|-------------------------------------------------------------|---------|
 | endpoint     | The base url for the file and folder API                    |         |
+| readonly     | Do not allow file deletion or creation                      | false   |
 | layout       | Files layout "rows" or "grid"                               | grid    |
 | lazy-folders | Should all folder be lazy loaded with a new call to the API | false   |
 | hidden       | Work like the default HTML attribute                        | false   |
 
 ## Events
 
-| Name         | Description                                        |
-|--------------|----------------------------------------------------|
-| close        | The user clicked on the overlay to close the modal |
-| fileSelected | The use selected a file                            |
+| Name        | Description                                        |
+|-------------|----------------------------------------------------|
+| close       | The user clicked on the overlay to close the modal |
+| fileselect  | The use selected a file                            |
 
 ## Options
 
-| Name           | Description                                        |
-|----------------|----------------------------------------------------|
-| getFiles()     | Custom API to retrieve files & folders             |
-| getFolders()   |                                                    |
-| deleteFile()   |                                                    |
-| deleteFolder() |                                                    |
-| uploadFile()   |                                                    |
-| createFolder() |                                                    |
+Options can be set on the `register()` method as a second argument. All the options are optional
+
+| Name           | Type     | Description                            |
+|----------------|----------|----------------------------------------|
+| readOnly       | bool     | Do not allow file deletion or creation |
+| endpoint       | string   | Endpoint for the REST API              |
+| getFiles()     | function | Custom API to retrieve files           |
+| getFolders()   | function | Custom API to retrieve folders         |
+| deleteFile()   | function | Custom API to delete file              |
+| deleteFolder() | function | Custom API to delete folder            |
+| uploadFile()   | function | Custom API to upload file              |
+| createFolder() | function | Custom API to create folder            |
 
 ## Custom API
 
