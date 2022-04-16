@@ -1,32 +1,40 @@
 import FileManagerComponent from "./FileManager.svelte";
-import config from "./config";
 import { setLang } from "./lang";
+import type { Options } from "./types";
+import config from "./config";
 
-export class FileManager extends HTMLElement {
+export class FileManager {
   private fm: FileManagerComponent | null = null;
-  static registered = false;
+  static registered = new Map();
+  private options: Options;
+
+  constructor(private element: HTMLElement, options: Partial<Options> = {}) {
+    this.options = { ...config, ...options };
+  }
 
   static get observedAttributes() {
     return ["hidden", "endpoint"];
   }
 
   connectedCallback() {
-    this.style.setProperty("display", "block");
-    const endpointAttr = this.getAttribute("endpoint");
+    this.element.style.setProperty("display", "block");
+    const endpointAttr = this.element.getAttribute("endpoint");
     if (endpointAttr) {
-      config.endpoint = endpointAttr!;
+      this.options.endpoint = endpointAttr!;
     }
 
-    if (!config.endpoint) {
+    if (!this.options.endpoint && !this.options.getFiles) {
       throw new Error("You must define an endpoint for this custom element");
     }
+
     setLang(document.documentElement.getAttribute("lang") || "en");
     this.fm = new FileManagerComponent({
-      target: this,
+      target: this.element,
       props: {
-        hidden: this.hidden,
-        layout: this.getAttribute("layout") || "grid",
-        lazyFolders: this.hasAttribute("lazy-folders"),
+        hidden: this.element.hidden,
+        layout: this.element.getAttribute("layout") || "grid",
+        lazyFolders: this.element.hasAttribute("lazy-folders"),
+        options: this.options,
       },
     });
   }
@@ -36,7 +44,7 @@ export class FileManager extends HTMLElement {
       this.fm.$set({ hidden: newValue !== null });
     }
     if (name === "endpoint") {
-      config.endpoint = newValue;
+      this.options.endpoint = newValue;
     }
   }
 
@@ -44,11 +52,37 @@ export class FileManager extends HTMLElement {
     this?.fm?.$destroy();
   }
 
-  static register(name = "file-manager", options?: Partial<typeof config>) {
-    Object.assign(config, options);
-    if (this.registered === false) {
-      customElements.define(name, FileManager);
-      this.registered = true;
+  static register(name = "file-manager", options?: Partial<Options>) {
+    if (!this.registered.has(name)) {
+      // A class cannot be used multiple time to declare a custom element so we need to creates
+      // a fresh class for every "register" call
+      class AnonymousFileManager extends HTMLElement {
+        private decorated: FileManager;
+
+        constructor() {
+          super();
+          this.decorated = new FileManager(this, options);
+        }
+
+        static get observedAttributes() {
+          return FileManager.observedAttributes;
+        }
+
+        connectedCallback() {
+          return this.decorated.connectedCallback();
+        }
+
+        attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+          return this.decorated.attributeChangedCallback(
+            name,
+            oldValue,
+            newValue
+          );
+        }
+      }
+
+      customElements.define(name, AnonymousFileManager);
+      this.registered.set(name, true);
     }
   }
 }

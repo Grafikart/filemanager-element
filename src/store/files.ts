@@ -1,10 +1,10 @@
-import { writable } from 'svelte/store';
-import type { File, Folder } from '../types';
-import { HTTPStatus } from '../types';
-import { QueryClient, useMutation, useQueryClient } from '../query';
-import config from '../config';
-import { t } from '../lang';
-import { flash } from './flash';
+import { writable } from "svelte/store";
+import type { File, Folder, Options } from "../types";
+import { HTTPStatus } from "../types";
+import { QueryClient, useMutation, useQueryClient } from "../query";
+import { t } from "../lang";
+import { flash } from "./flash";
+import { getOptions } from "./index";
 
 export const rootFolder = {
   id: null,
@@ -31,7 +31,11 @@ export const searchQuery = writable("");
 /*
  * Methods
  */
-export const removeFile = async (queryClient: QueryClient, file: File) => {
+export const removeFile = async (
+  options: Options,
+  queryClient: QueryClient,
+  file: File
+) => {
   const queryKey = filesQueryKey(file.folder);
   const oldData = queryClient.getQueryData(queryKey);
   if (oldData) {
@@ -40,24 +44,26 @@ export const removeFile = async (queryClient: QueryClient, file: File) => {
     );
   }
   try {
-    await config.deleteFile(file);
+    await options.deleteFile(file);
   } catch (e) {
     if (
       !(e instanceof Response) ||
       e.status !== HTTPStatus.UnprocessableEntity
     ) {
       flash(t(`serverError`), "danger");
+      console.error(e);
     }
     queryClient.setQueryData(queryKey, oldData);
   }
 };
 export const uploadFile = async (
+  options: Options,
   queryClient: QueryClient,
   file: any,
   folder: Folder
 ) => {
   try {
-    const newFile = await config.uploadFile(file, folder)
+    const newFile = await options.uploadFile(file, folder);
     const queryKey = filesQueryKey(folder?.id);
     const state = queryClient.getQueryState(queryKey);
     if (state?.data) {
@@ -71,14 +77,16 @@ export const uploadFile = async (
       e.status !== HTTPStatus.UnprocessableEntity
     ) {
       flash(t(`serverError`), "danger");
+      console.error(e);
     }
   }
 };
 
 export const useCreateFolderMutation = () => {
   const queryClient = useQueryClient();
+  const options = getOptions();
   return useMutation(
-    config.createFolder,
+    (params: Pick<Folder, "name" | "parent">) => options.createFolder(params),
     {
       onSuccess(folder: Folder) {
         // Add the new folder into a specific cache
@@ -102,9 +110,9 @@ export const useCreateFolderMutation = () => {
 
 export const useDeleteFolderMutation = () => {
   const queryClient = useQueryClient();
+  const options = getOptions();
   return useMutation(
-    (folder: Folder) =>
-      config.deleteFolder(folder).then((r) => folder),
+    (folder: Folder) => options.deleteFolder(folder).then((r) => folder),
     {
       onSuccess: (folder: Folder) => {
         // If we are deleting the current directory, back to the parent

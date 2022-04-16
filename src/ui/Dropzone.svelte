@@ -2,14 +2,15 @@
   import IconUpload from "./icons/IconUpload.svelte";
   import { dragOver } from "../actions/dragOver";
   import { useQueryClient } from "../query";
-  import { uploadFile, folder } from "../store";
+  import { uploadFile, folder, getOptions } from '../store';
   let over = false;
   const handleDragOver = () => (over = true);
   const handleDragLeave = () => (over = false);
   const queryClient = useQueryClient();
+  const options = getOptions()
   const handleDrop = (e: DragEvent) => {
     Array.from(e.dataTransfer!.files).forEach((file) =>
-      uploadFile(queryClient, file, $folder)
+      uploadFile(options, queryClient, file, $folder)
     );
   };
 </script>

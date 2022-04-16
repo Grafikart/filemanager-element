@@ -30,17 +30,10 @@
 </template>
 
 <script lang="ts">
-  import {
-    useDeleteFolderMutation,
-    filesQueryKey,
-    foldersQueryKey,
-    searchQuery, flash
-  } from '../store';
-  import { useQuery } from "../query";
-  import config from "../config";
-  import { fetchApi } from "../functions/api";
-  import IconLoader from "./icons/IconLoader.svelte";
-  import type { File, Folder } from "../types";
+  import { filesQueryKey, foldersQueryKey, getOptions, searchQuery, useDeleteFolderMutation } from '../store';
+  import { useQuery } from '../query';
+  import IconLoader from './icons/IconLoader.svelte';
+  import type { File, Folder } from '../types';
   import FilesListRows from './FilesListRows.svelte'
   import FilesListGrid from './FilesListGrid.svelte'
   import { t } from '../lang'
@@ -55,26 +48,26 @@
   };
 
   const filesQuery = useQuery(filesQueryKey(folder?.id), () =>
-    config.getFiles(folder)
+    getOptions().getFiles(folder)
   );
 
   let files = [] as File[];
   $: {
     files = $filesQuery.isSuccess
       ? $filesQuery.data.filter((f: File) =>
-          $searchQuery ? f.name.includes($searchQuery) : true
-        )
+        $searchQuery ? f.name.includes($searchQuery) : true
+      )
       : [];
   }
 
   // Fake query to retrieve folder informations
   const folders = useQuery(foldersQueryKey(folder?.id), () => [] as Folder[], {
-    enabled: false,
+    enabled: false
   });
   $: isEmpty =
     folder?.id &&
     (folder?.children && folder.children.length === 0 || $folders.isSuccess &&
-    $folders?.data?.length === 0) &&
+      $folders?.data?.length === 0) &&
     $filesQuery.isSuccess &&
     $filesQuery?.data?.length === 0;
 </script>

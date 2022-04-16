@@ -1,11 +1,10 @@
 <script lang="ts">
   import type { Folder } from '../../types';
   import { useQuery, useQueryClient } from '../../query';
-  import config from '../../config';
   import IconLoader from '../icons/IconLoader.svelte';
   import IconFolder from '../icons/IconFolder.svelte';
   import Folders from './Folders.svelte';
-  import { folder as currentFolder, foldersQueryKey, uploadFile } from '../../store';
+  import { folder as currentFolder, foldersQueryKey, getOptions, uploadFile } from '../../store';
   import { dragOver } from '../../actions/dragOver';
   import IconCirclePlus from '../icons/IconCirclePlus.svelte';
   import NewFolder from './NewFolder.svelte';
@@ -21,11 +20,12 @@
   let addNewFolder = false;
   let showChildren = !folder.id
 
+  const options = getOptions()
   const handleDragOver = () => (over = true);
   const handleDragLeave = () => (over = false);
   const handleDrop = (e: DragEvent) => {
     Array.from(e.dataTransfer!.files).forEach((file) =>
-      uploadFile(queryClient, file, folder)
+      uploadFile(options, queryClient, file, folder)
     );
   };
   const handleAddFolder = () => {
@@ -54,7 +54,7 @@
 
   const childrenQuery = useQuery(
     foldersQueryKey(folder.id),
-    () => config.getFolders(folder),
+    () => options.getFolders(folder),
     {
       enabled: !folder.id
     }

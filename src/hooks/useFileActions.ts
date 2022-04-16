@@ -1,15 +1,16 @@
 import type { File } from "../types";
 import { useQueryClient } from "../query";
-import { flash, removeFile } from "../store";
+import { flash, getOptions, removeFile } from "../store";
 import { t } from "../lang";
 
 export function useFileActions(file: File, element: HTMLElement) {
   const queryClient = useQueryClient();
+  const options = getOptions();
   const handleDelete = () => {
     if (!confirm(t("deleteConfirm"))) {
       return;
     }
-    removeFile(queryClient, file);
+    removeFile(options, queryClient, file);
   };
   const handleClick = () => {
     element.dispatchEvent(

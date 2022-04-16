@@ -1,5 +1,6 @@
 import type { components } from "./generated-schema";
 import type FR from "../langs/fr";
+import type config from "../config";
 
 export type Folder = {
   children?: components["schemas"]["Folder"][];
@@ -27,6 +28,8 @@ export enum HTTPStatus {
   NotFound = 404,
   BadRequest = 400,
 }
+
+export type Options = typeof config;
 
 /**
  * Utility types
