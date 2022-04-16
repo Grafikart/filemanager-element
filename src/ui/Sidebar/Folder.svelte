@@ -63,7 +63,7 @@
   let children: Folder[] | null = null
   $: {
     if ($childrenQuery.isSuccess) {
-      children = (lazyLoad ? $childrenQuery.data : nestFolder($childrenQuery.data)).filter((f: Folder) => f.parent === folder.id);
+      children = (lazyLoad ? $childrenQuery.data! : nestFolder($childrenQuery.data!)).filter((f: Folder) => f.parent === folder.id);
     }
   }
 </script>
