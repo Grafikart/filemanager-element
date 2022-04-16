@@ -5,7 +5,8 @@
 
 ![](./screenshot.jpg)
 
-You want a simple file browser for your website, without the hassle of a front-end framework ? Here is a simple custom element for you.
+You want a simple file browser for your website, without the hassle of a front-end framework ? Here is a simple custom
+element for you.
 
 First register the custom element (the lang is infered from the html "lang" attribute)
 
@@ -52,3 +53,37 @@ filemanager.addEventListener("selectfile", e => {
 |--------------|----------------------------------------------------|
 | close        | The user clicked on the overlay to close the modal |
 | fileSelected | The use selected a file                            |
+
+## Options
+
+| Name           | Description                                        |
+|----------------|----------------------------------------------------|
+| getFiles()     | Custom API to retrieve files & folders             |
+| getFolders()   |                                                    |
+| deleteFile()   |                                                    |
+| deleteFolder() |                                                    |
+| uploadFile()   |                                                    |
+| createFolder() |                                                    |
+
+## Custom API
+
+If you do not use a traditional REST API you can overwrite the method used to fetch the data.
+
+```ts
+import type {File as FileType, Folder} from 'filemanager-element'
+
+FileManager.register('my-file-manager', {
+  getFiles (folder?: Folder): Promise<FileType[]> {
+  },
+  getFolders (parent?: Folder): Promise<Folder> {
+  },
+  createFolder (params: Pick<Folder, "parent" | "name">): Promise<Folder> {
+  },
+  deleteFile (file: FileType): Promise<void> {
+  },
+  deleteFolder (folder: Folder): Promise<void> {
+  },
+  uploadFile (file: File, folder: Folder): Promise<Filetype> {
+  }
+})
+```

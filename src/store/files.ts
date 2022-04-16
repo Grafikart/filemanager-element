@@ -1,29 +1,23 @@
 import { writable } from "svelte/store";
-import type { File, Folder, Options } from "../types";
+import type { File, Folder, NullableId, Options } from "../types";
 import { HTTPStatus } from "../types";
 import { QueryClient, useMutation, useQueryClient } from "../query";
 import { t } from "../lang";
 import { flash } from "./flash";
 import { getOptions } from "./index";
 
-export const rootFolder = {
-  id: null,
-  name: "/",
-  parent: null,
-};
-
 /**
  * Helpers
  */
-export const filesQueryKey = (folderId?: Folder["id"] | null) =>
-  `files/${folderId || ""}`;
-export const foldersQueryKey = (parentId?: Folder["id"] | null) =>
-  `folders/${parentId || ""}`;
+export const filesQueryKey = (folderId?: NullableId) =>
+  `files/${folderId ?? ""}`;
+export const foldersQueryKey = (parentId?: NullableId) =>
+  `folders/${parentId ?? ""}`;
 
 /**
  * Store
  */
-const folderStore = writable<Folder>(rootFolder);
+const folderStore = writable<Folder | null>(null);
 
 export const folder = folderStore;
 export const searchQuery = writable("");
@@ -60,7 +54,7 @@ export const uploadFile = async (
   options: Options,
   queryClient: QueryClient,
   file: any,
-  folder: Folder
+  folder?: Folder | null
 ) => {
   try {
     const newFile = await options.uploadFile(file, folder);
@@ -116,9 +110,9 @@ export const useDeleteFolderMutation = () => {
     {
       onSuccess: (folder: Folder) => {
         // If we are deleting the current directory, back to the parent
-        folderStore.update((f: Folder | null) => rootFolder);
+        folderStore.update(() => null);
         // Update the store (both the root and this depth
-        const updateData = (parent: Folder["id"]) => {
+        const updateData = (parent?: Folder["id"] | null) => {
           const queryKey = foldersQueryKey(parent);
           const state = queryClient.getQueryState(queryKey);
           if (state?.data) {
@@ -130,7 +124,7 @@ export const useDeleteFolderMutation = () => {
           }
         };
         updateData(folder.parent);
-        updateData(null);
+        updateData();
       },
     }
   );

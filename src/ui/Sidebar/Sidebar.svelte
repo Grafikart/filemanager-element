@@ -1,18 +1,14 @@
 <script lang="ts">
-  import type { Folder } from "../../types";
   import Folders from "./Folders.svelte";
   import Search from "./Search.svelte";
-  import { rootFolder } from '../../store'
 
   export let lazyFolders: boolean
-
-  const root: Folder = rootFolder;
 </script>
 
 <template>
   <aside class="fm-sidebar">
     <Search />
-    <Folders folders={[root]} lazyLoad={lazyFolders} />
+    <Folders folders={[null]} lazyLoad={lazyFolders} />
   </aside>
 </template>
 

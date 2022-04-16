@@ -48,10 +48,10 @@ export const mockApi = async (page: Page) => {
         body: JSON.stringify({
           id: Date.now(),
           name: `new_file.png`,
-          url: image,
+          url: "https://picsum.photos/1024/768",
           size: Math.round(Math.random() * 344189),
           folder: 1,
-          thumbnail: image,
+          thumbnail: "https://picsum.photos/100/100",
         }),
       });
     }
@@ -68,12 +68,9 @@ export const mockApi = async (page: Page) => {
   });
 };
 
-const image =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wFwNYX/Afv3AALxGQAoXz8A9PzvAAFjMnH/BgkMAAcDCwDxAA8A7A4LAAFzOIr/B/oDAPb99gABAAQA7AYQAAGBOKH/+Pj8AP7/8wD89AoAByEcAAFkM3P/AfoCABQHEwDz7RIAJEkqAK2qJGVCd5kpAAAAAElFTkSuQmCC";
-
 export const foldersResponse = (
   n: number,
-  parent: number | string | null = null
+  parent?: Folder["parent"]
 ): Folder[] => {
   return [
     ...Array.from({ length: n }, (_, i) => ({
@@ -81,12 +78,14 @@ export const foldersResponse = (
       name: parent ? `Child ${i}` : `Folder ${i}`,
       parent: parent,
     })),
-    ...(parent === null ? foldersResponse(10, 2) : []),
-    ...(parent === null ? [{ id: "empty", name: "Empty", parent: null }] : []),
+    ...(parent === undefined ? foldersResponse(10, 2) : []),
+    ...(parent === undefined
+      ? [{ id: "empty", name: "Empty", parent: null }]
+      : []),
   ];
 };
 
-export const filesResponse = (n: number, folder: Folder["id"]): File[] => {
+export const filesResponse = (n: number, folder?: Folder["parent"]): File[] => {
   const seed = between(0, 500);
   return Array.from({ length: n }, (_, i) => {
     const url = `https://picsum.photos/id/${seed + i}`;

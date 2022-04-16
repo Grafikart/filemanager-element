@@ -7,12 +7,12 @@ const config = {
     timeout: 5_000,
   },
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: 1,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? "github" : "list",
   use: {
     actionTimeout: 0,
-    trace: process.env.CI ? "off" : "retain-on-failure",
+    trace: process.env.CI ? "off" : "on-first-retry",
   },
   webServer: {
     command: "npm run dev",

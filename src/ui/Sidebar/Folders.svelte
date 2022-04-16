@@ -10,7 +10,7 @@
   import type { Folder as FolderType } from '../../types'
   import Folder from './Folder.svelte'
 
-  export let folders: FolderType[]
+  export let folders: (FolderType | null)[]
   export let lazyLoad: boolean
 </script>
 

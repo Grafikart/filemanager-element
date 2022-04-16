@@ -12,6 +12,7 @@ paths:
       parameters:
         - in: query
           name: parent
+          required: false
           schema:
             type: string
       responses:
@@ -46,15 +47,15 @@ paths:
               type: object
               required:
                 - name
-                - parent
               properties:
                 name:
                   type: string
                 parent:
                   oneOf:
                     - type: string
+                      nullable: true
                     - type: integer
-
+                      nullable: true
 
   /folders/{id}:
     delete:
@@ -83,6 +84,7 @@ paths:
       parameters:
         - in: query
           name: folder
+          required: false
           schema:
             type: string
       responses:
@@ -172,7 +174,6 @@ components:
       required:
         - id
         - name
-        - parent
       properties:
         id:
           $ref: '#/components/schemas/ID'
@@ -180,18 +181,13 @@ components:
           type: string
           description: FolderResource name
         parent:
-          description: Parent folder
-          nullable: true
-          oneOf:
-            - type: string
-            - type: integer
+          $ref: '#/components/schemas/NullableID'
     File:
       type: object
       required:
         - id
         - name
         - url
-        - folder
         - thumbnail
       properties:
         id:
@@ -206,10 +202,16 @@ components:
           type: integer
           description: File size
         folder:
-          $ref: '#/components/schemas/ID'
+          $ref: '#/components/schemas/NullableID'
         thumbnail:
           type: string
     ID:
       oneOf:
         - type: string
         - type: integer
+    NullableID:
+      oneOf:
+        - type: string
+          nullable: true
+        - type: integer
+          nullable: true

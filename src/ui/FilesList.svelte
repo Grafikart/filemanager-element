@@ -39,7 +39,7 @@
   import { t } from '../lang'
 
   export let layout: 'grid' | 'rows'
-  export let folder: Folder;
+  export let folder: Folder | null;
   const deleteFolder = useDeleteFolderMutation();
   const handleDelete = () => {
     if (folder) {

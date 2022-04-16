@@ -13,12 +13,12 @@
   import { tooltip } from '../../actions/tooltip'
 
   const queryClient = useQueryClient();
-  export let folder: Folder;
+  export let folder: Folder | null;
   export let lazyLoad: boolean;
 
   let over = false;
   let addNewFolder = false;
-  let showChildren = !folder.id
+  let showChildren = !folder?.id
 
   const options = getOptions()
   const handleDragOver = () => (over = true);
@@ -31,7 +31,7 @@
   const handleAddFolder = () => {
     addNewFolder = true;
     showChildren = true;
-    if (!$childrenQuery.isSuccess && folder.children === undefined) {
+    if (!$childrenQuery.isSuccess && folder?.children === undefined) {
       $childrenQuery.refetch();
     }
   };
@@ -47,23 +47,23 @@
     showChildren = true
     $currentFolder = folder;
     // Do not prefetch if we already have children loaded
-    if (folder.children === undefined) {
+    if (folder?.children === undefined) {
       $childrenQuery.refetch();
     }
   };
 
   const childrenQuery = useQuery(
-    foldersQueryKey(folder.id),
-    () => options.getFolders(folder),
+    foldersQueryKey(folder?.id),
+    () => options.getFolders(folder?.id ? folder : undefined),
     {
-      enabled: !folder.id
+      enabled: !folder?.id
     }
   );
 
   let children: Folder[] | null = null
   $: {
     if ($childrenQuery.isSuccess) {
-      children = (lazyLoad ? $childrenQuery.data! : nestFolder($childrenQuery.data!)).filter((f: Folder) => f.parent === folder.id);
+      children = (lazyLoad ? $childrenQuery.data! : nestFolder($childrenQuery.data!)).filter((f: Folder) => (f.parent ?? null) === (folder?.id ?? null));
     }
   }
 </script>
@@ -72,7 +72,7 @@
   <li>
     <span
             class="fm-folder-wrapper"
-            class:active={folder.id === $currentFolder?.id || over}
+            class:active={folder?.id === $currentFolder?.id || over}
     >
       <span
               class="fm-folder"
@@ -88,7 +88,7 @@
           <IconFolder class="folder-icon"/>
         {/if}
         <span class="fm-folder-name">
-          {folder.name}
+          {folder?.name ?? '/'}
         </span>
       </span>
       <button class="fm-new-folder" on:click|preventDefault={handleAddFolder} use:tooltip={t('createFolder')}>
@@ -102,8 +102,8 @@
               on:cancel={exitAddFolder}
       />
     {/if}
-    {#if folder.children && showChildren}
-      <Folders folders={folder.children} lazyLoad={lazyLoad}/>
+    {#if folder?.children && showChildren}
+      <Folders folders={folder?.children} lazyLoad={lazyLoad}/>
     {:else if children && showChildren}
       <Folders folders={children} lazyLoad={lazyLoad}/>
     {/if}

@@ -4,14 +4,14 @@ import { filesResponse, foldersResponse } from "../tests/mockApi";
 
 FileManager.register();
 FileManager.register("fn-file-manager", {
-  getFiles(folder: Folder) {
-    if (folder.name === "Empty") {
+  getFiles(folder?: Folder | null) {
+    if (folder?.name === "Empty") {
       return Promise.resolve([]);
     }
-    return Promise.resolve(filesResponse(15, folder.id!));
+    return Promise.resolve(filesResponse(15, folder?.id));
   },
-  getFolders(parent: Folder) {
-    return Promise.resolve(foldersResponse(10, parent.id));
+  getFolders(parent?: Folder | null) {
+    return Promise.resolve(foldersResponse(10, parent?.id));
   },
   createFolder(params: Pick<Folder, "parent" | "name">) {
     return Promise.resolve({
