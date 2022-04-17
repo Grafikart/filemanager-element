@@ -1,6 +1,6 @@
 {
   "name": "filemanager-element",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "FileManager.js",
   "homepage": "https://github.com/Grafikart/filemanager-element#README",
