@@ -1,6 +1,9 @@
 export function tooltip(node: HTMLElement, title: string) {
   let tooltip = null as HTMLElement | null;
   const onMouveOver = () => {
+    if (tooltip) {
+      return;
+    }
     const rect = node.getBoundingClientRect();
 
     // Create the tooltip
@@ -33,6 +36,7 @@ export function tooltip(node: HTMLElement, title: string) {
           });
           window.setTimeout(() => {
             tooltip?.remove();
+            tooltip = null;
           }, 200);
         }
       },

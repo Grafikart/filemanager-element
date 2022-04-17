@@ -1,4 +1,3 @@
-import { writable } from "svelte/store";
 import type { Lang } from "./types";
 import FR from "./langs/fr";
 import EN from "./langs/en";

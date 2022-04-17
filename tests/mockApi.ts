@@ -91,7 +91,7 @@ export const filesResponse = (n: number, folder?: Folder["parent"]): File[] => {
     const url = `https://picsum.photos/id/${seed + i}`;
     return {
       id: i,
-      name: `${folder}_${i}.jpg`,
+      name: `${folder ?? "root"}_${i}.jpg`,
       url: url + "/1024/768",
       size: Math.round(Math.random() * 344189),
       folder,

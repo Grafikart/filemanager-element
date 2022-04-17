@@ -2,6 +2,9 @@ import { FileManager } from "./FileManager";
 import type { Folder, File as FileType } from "./types";
 import { filesResponse, foldersResponse } from "../tests/mockApi";
 
+/**
+ * This code is for demo / test purpose, it's not used for the library
+ */
 FileManager.register();
 FileManager.register("fn-file-manager", {
   getFiles(folder?: Folder | null) {
