@@ -1,6 +1,6 @@
-import { devices } from "@playwright/test";
+import { devices, PlaywrightTestConfig } from "@playwright/test";
 
-const config = {
+const config: PlaywrightTestConfig = {
   testDir: "./tests",
   timeout: 5_000,
   expect: {
