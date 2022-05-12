@@ -11,6 +11,7 @@
               {/key}
             </Dropzone>
             <Alerts/>
+            <UploadProgress />
           </div>
         </div>
       </div>
@@ -24,6 +25,7 @@
   import Sidebar from './ui/Sidebar/Sidebar.svelte'
   import { QueryClient, QueryClientProvider } from './query'
   import Dropzone from './ui/Dropzone.svelte'
+  import UploadProgress from './ui/Progress/UploadProgress.svelte'
   import FilesList from './ui/FilesList.svelte'
   import Alerts from './ui/Alerts/Alerts.svelte'
   import { folder } from './store'

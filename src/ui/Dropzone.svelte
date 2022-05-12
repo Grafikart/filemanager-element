@@ -2,16 +2,18 @@
   import IconUpload from "./icons/IconUpload.svelte";
   import { dragOver } from "../actions/dragOver";
   import { useQueryClient } from "../query";
-  import { uploadFile, folder, getOptions } from '../store';
+  import { uploadFile, folder, getOptions, uploads } from '../store';
   let over = false;
   const handleDragOver = () => (over = true);
   const handleDragLeave = () => (over = false);
   const queryClient = useQueryClient();
   const options = getOptions()
   const handleDrop = (e: DragEvent) => {
-    Array.from(e.dataTransfer!.files).forEach((file) =>
-      uploadFile(options, queryClient, file, $folder)
-    );
+    Array.from(e.dataTransfer!.files).forEach(async (file) => {
+      uploads.push(file)
+      await uploadFile(options, queryClient, file, $folder)
+      uploads.remove(file)
+    });
   };
 </script>
 
